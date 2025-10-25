@@ -1,12 +1,73 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { StatusBar } from "@/components/StatusBar";
+import { MarketCommandCenter } from "@/components/tabs/MarketCommandCenter";
+import { PredictiveIntelligence } from "@/components/tabs/PredictiveIntelligence";
+import { WhatIfCommand } from "@/components/tabs/WhatIfCommand";
+import { ProcurementCommand } from "@/components/tabs/ProcurementCommand";
 
 const Index = () => {
+  const [activeTab, setActiveTab] = useState("market");
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+      <StatusBar />
+      
+      <main className="container mx-auto px-6 py-8">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold tracking-tight text-foreground">
+            CSR Procurement Dashboard
+          </h1>
+          <p className="mt-2 text-muted-foreground">
+            Complete procurement decision cycle - from market intelligence to execution
+          </p>
+        </div>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="mb-8 grid w-full grid-cols-4 gap-4 bg-transparent p-0">
+            <TabsTrigger
+              value="market"
+              className="rounded-lg border-2 border-transparent bg-card px-6 py-4 text-base font-semibold transition-all data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg"
+            >
+              Market Command Center
+            </TabsTrigger>
+            <TabsTrigger
+              value="predictive"
+              className="rounded-lg border-2 border-transparent bg-card px-6 py-4 text-base font-semibold transition-all data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg"
+            >
+              Predictive Intelligence
+            </TabsTrigger>
+            <TabsTrigger
+              value="whatif"
+              className="rounded-lg border-2 border-transparent bg-card px-6 py-4 text-base font-semibold transition-all data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg"
+            >
+              What-If Command Center
+            </TabsTrigger>
+            <TabsTrigger
+              value="procurement"
+              className="rounded-lg border-2 border-transparent bg-card px-6 py-4 text-base font-semibold transition-all data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg"
+            >
+              Procurement Command & Control
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="market" className="mt-0">
+            <MarketCommandCenter />
+          </TabsContent>
+
+          <TabsContent value="predictive" className="mt-0">
+            <PredictiveIntelligence />
+          </TabsContent>
+
+          <TabsContent value="whatif" className="mt-0">
+            <WhatIfCommand />
+          </TabsContent>
+
+          <TabsContent value="procurement" className="mt-0">
+            <ProcurementCommand />
+          </TabsContent>
+        </Tabs>
+      </main>
     </div>
   );
 };
