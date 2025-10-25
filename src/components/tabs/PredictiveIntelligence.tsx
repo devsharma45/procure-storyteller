@@ -1,8 +1,36 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { TrendingUp, Cloud, Globe, AlertTriangle } from "lucide-react";
+import { TrendingUp, Cloud, Globe, AlertTriangle, Download } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from "recharts";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { toast } from "@/hooks/use-toast";
+import { useState } from "react";
+
+// Forecast data with confidence bands
+const forecastData = [
+  { month: "Nov '24", ny11Low: 22.5, ny11: 24.2, ny11High: 25.8, london5Low: 620, london5: 640, london5High: 660 },
+  { month: "Dec '24", ny11Low: 23.2, ny11: 25.1, ny11High: 27.0, london5Low: 635, london5: 658, london5High: 680 },
+  { month: "Jan '25", ny11Low: 23.8, ny11: 25.8, ny11High: 27.9, london5Low: 645, london5: 670, london5High: 695 },
+  { month: "Feb '25", ny11Low: 24.5, ny11: 26.8, ny11High: 29.1, london5Low: 660, london5: 688, london5High: 715 },
+  { month: "Mar '25", ny11Low: 25.0, ny11: 27.5, ny11High: 30.0, london5Low: 670, london5: 700, london5High: 730 },
+  { month: "Apr '25", ny11Low: 25.8, ny11: 28.5, ny11High: 31.2, london5Low: 685, london5: 720, london5High: 755 },
+];
+
+// Supply and demand data
+const supplyDemandData = [
+  { region: "Brazil", supply: 42, demand: 37, surplus: 5 },
+  { region: "Vietnam", supply: 18, demand: 20, surplus: -2 },
+  { region: "Colombia", supply: 15, demand: 15, surplus: 0 },
+  { region: "India", supply: 35, demand: 38, surplus: -3 },
+];
 
 export const PredictiveIntelligence = () => {
+  const [timeHorizon, setTimeHorizon] = useState("3M");
+
+  const handleDownload = () => {
+    toast({ title: "Downloading Forecast", description: "Predictive intelligence report is being prepared..." });
+  };
+
   return (
     <div className="space-y-6">
       {/* Forecast Timeline */}
@@ -13,16 +41,41 @@ export const PredictiveIntelligence = () => {
             <p className="text-sm text-muted-foreground">AI-powered predictions with confidence bands</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm">1M</Button>
-            <Button variant="default" size="sm">3M</Button>
-            <Button variant="outline" size="sm">6M</Button>
-            <Button variant="outline" size="sm">12M</Button>
+            <Button variant={timeHorizon === "1M" ? "default" : "outline"} size="sm" onClick={() => setTimeHorizon("1M")}>1M</Button>
+            <Button variant={timeHorizon === "3M" ? "default" : "outline"} size="sm" onClick={() => setTimeHorizon("3M")}>3M</Button>
+            <Button variant={timeHorizon === "6M" ? "default" : "outline"} size="sm" onClick={() => setTimeHorizon("6M")}>6M</Button>
+            <Button variant={timeHorizon === "12M" ? "default" : "outline"} size="sm" onClick={() => setTimeHorizon("12M")}>12M</Button>
           </div>
         </div>
         <div className="h-96 rounded-lg bg-muted/30 p-4">
-          <div className="flex h-full items-center justify-center text-muted-foreground">
-            [Forecast chart with confidence intervals]
-          </div>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={forecastData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
+              <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
+              <YAxis yAxisId="left" stroke="hsl(var(--primary))" label={{ value: 'NY11 (¢/lb)', angle: -90, position: 'insideLeft' }} />
+              <YAxis yAxisId="right" orientation="right" stroke="hsl(var(--accent))" label={{ value: 'London No.5 ($/MT)', angle: 90, position: 'insideRight' }} />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: 'hsl(var(--card))', 
+                  border: '1px solid hsl(var(--border))',
+                  borderRadius: '8px'
+                }}
+              />
+              <Legend />
+              <Line yAxisId="left" type="monotone" dataKey="ny11Low" stroke="hsl(var(--primary))" strokeWidth={1} strokeDasharray="5 5" name="NY11 Low" dot={false} />
+              <Line yAxisId="left" type="monotone" dataKey="ny11" stroke="hsl(var(--primary))" strokeWidth={3} name="NY11 Forecast" />
+              <Line yAxisId="left" type="monotone" dataKey="ny11High" stroke="hsl(var(--primary))" strokeWidth={1} strokeDasharray="5 5" name="NY11 High" dot={false} />
+              <Line yAxisId="right" type="monotone" dataKey="london5Low" stroke="hsl(var(--accent))" strokeWidth={1} strokeDasharray="5 5" name="London Low" dot={false} />
+              <Line yAxisId="right" type="monotone" dataKey="london5" stroke="hsl(var(--accent))" strokeWidth={3} name="London No.5 Forecast" />
+              <Line yAxisId="right" type="monotone" dataKey="london5High" stroke="hsl(var(--accent))" strokeWidth={1} strokeDasharray="5 5" name="London High" dot={false} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="mt-4 flex justify-end">
+          <Button variant="outline" size="sm" onClick={handleDownload}>
+            <Download className="h-4 w-4" />
+            Download Forecast
+          </Button>
         </div>
         <div className="mt-4 flex items-center justify-between rounded-lg border bg-accent/5 p-4">
           <div className="flex items-center gap-3">
@@ -83,9 +136,23 @@ export const PredictiveIntelligence = () => {
             Supply & Demand Forecast
           </h3>
           <div className="mb-6 h-48 rounded-lg bg-muted/30 p-4">
-            <div className="flex h-full items-center justify-center text-muted-foreground">
-              [Supply/Demand balance chart by region]
-            </div>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={supplyDemandData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
+                <XAxis dataKey="region" stroke="hsl(var(--muted-foreground))" />
+                <YAxis stroke="hsl(var(--muted-foreground))" label={{ value: 'Million MT', angle: -90, position: 'insideLeft' }} />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'hsl(var(--card))', 
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '8px'
+                  }}
+                />
+                <Legend />
+                <Bar dataKey="supply" fill="hsl(var(--primary))" name="Supply" />
+                <Bar dataKey="demand" fill="hsl(var(--accent))" name="Demand" />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
