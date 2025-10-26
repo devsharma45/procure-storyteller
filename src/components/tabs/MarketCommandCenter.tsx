@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { lbToMt } from "@/lib/utils";
 
 // Dummy price data for 6 months history + 3 months prediction (prices in $/lb and $/MT)
 const priceData = [
@@ -21,6 +23,9 @@ const priceData = [
 ];
 
 export const MarketCommandCenter = () => {
+  const [unit, setUnit] = useState<"lb" | "mt">("lb");
+  const [showNY11, setShowNY11] = useState(true);
+  const [showLondon, setShowLondon] = useState(true);
   const handleExport = () => {
     toast({ title: "Exporting Report", description: "Market analysis report is being generated..." });
   };
@@ -143,18 +148,37 @@ export const MarketCommandCenter = () => {
               <h3 className="text-lg font-semibold text-foreground">NY11 & London No.5 Price Movement</h3>
               <p className="text-sm text-muted-foreground">6-month history + 3-month forecast</p>
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm">6M</Button>
-              <Button variant="outline" size="sm">1Y</Button>
-              <Button variant="outline" size="sm">All</Button>
+            <div className="flex items-center gap-4">
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm">6M</Button>
+                <Button variant="outline" size="sm">1Y</Button>
+                <Button variant="outline" size="sm">All</Button>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex gap-2">
+                  <Button size="sm" variant={unit === "lb" ? "default" : "outline"} onClick={() => setUnit("lb")}>$/lb</Button>
+                  <Button size="sm" variant={unit === "mt" ? "default" : "outline"} onClick={() => setUnit("mt")}>$/MT</Button>
+                </div>
+                <label className="flex items-center gap-2 text-sm">
+                  <input type="checkbox" checked={showNY11} onChange={() => setShowNY11(v => !v)} /> NY11
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <input type="checkbox" checked={showLondon} onChange={() => setShowLondon(v => !v)} /> London
+                </label>
+              </div>
             </div>
           </div>
           <div className="h-80 rounded-lg bg-muted/30 p-4">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={priceData}>
+              {/* convert NY11 series to MT for display when requested */}
+              <LineChart data={priceData.map(d => ({
+                ...d,
+                ny11_mt: d.ny11 ? lbToMt(d.ny11) : undefined,
+                ny11Forecast_mt: d.ny11Forecast ? lbToMt(d.ny11Forecast) : undefined,
+              }))}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
                 <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
-                <YAxis yAxisId="left" stroke="hsl(var(--primary))" label={{ value: 'NY11 ($/lb)', angle: -90, position: 'insideLeft' }} />
+                <YAxis yAxisId="left" stroke="hsl(var(--primary))" label={{ value: unit === "lb" ? 'NY11 ($/lb)' : 'NY11 ($/MT)', angle: -90, position: 'insideLeft' }} />
                 <YAxis yAxisId="right" orientation="right" stroke="hsl(var(--accent))" label={{ value: 'London No.5 ($/MT)', angle: 90, position: 'insideRight' }} />
                 <Tooltip 
                   contentStyle={{ 
@@ -163,21 +187,26 @@ export const MarketCommandCenter = () => {
                     borderRadius: '8px'
                   }}
                   formatter={(value: number, name: string) => {
-                    if (name.includes('NY11')) return [`$${value.toFixed(3)}/lb`, name];
+                    if (name.includes('NY11')) {
+                      if (unit === "lb") return [`$${(value as number).toFixed(3)}/lb`, name];
+                      return [`$${Math.round((value as number))}/MT`, name];
+                    }
                     return [`$${value}/MT`, name];
                   }}
                 />
                 <Legend />
                 {/* Historical lines (solid) */}
-                <Line 
-                  yAxisId="left"
-                  type="monotone" 
-                  dataKey="ny11" 
-                  stroke="hsl(var(--primary))" 
-                  strokeWidth={2}
-                  name="NY11 ($/lb)"
-                  connectNulls
-                />
+                {showNY11 && (
+                  <Line 
+                    yAxisId="left"
+                    type="monotone" 
+                    dataKey={unit === "lb" ? "ny11" : "ny11_mt"} 
+                    stroke="hsl(var(--primary))" 
+                    strokeWidth={2}
+                    name={`NY11 (${unit === "lb" ? "$/lb" : "$/MT"})`}
+                    connectNulls
+                  />
+                )}
                 <Line 
                   yAxisId="right"
                   type="monotone" 
@@ -188,16 +217,18 @@ export const MarketCommandCenter = () => {
                   connectNulls
                 />
                 {/* Forecast lines (dashed) */}
-                <Line 
-                  yAxisId="left"
-                  type="monotone" 
-                  dataKey="ny11Forecast" 
-                  stroke="hsl(var(--primary))" 
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                  name="NY11 Forecast ($/lb)"
-                  connectNulls
-                />
+                {showNY11 && (
+                  <Line 
+                    yAxisId="left"
+                    type="monotone" 
+                    dataKey={unit === "lb" ? "ny11Forecast" : "ny11Forecast_mt"} 
+                    stroke="hsl(var(--primary))" 
+                    strokeWidth={2}
+                    strokeDasharray="5 5"
+                    name={`NY11 Forecast (${unit === "lb" ? "$/lb" : "$/MT"})`}
+                    connectNulls
+                  />
+                )}
                 <Line 
                   yAxisId="right"
                   type="monotone" 

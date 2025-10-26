@@ -5,6 +5,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { lbToMt } from "@/lib/utils";
 
 // Forecast data with confidence bands (prices in $/lb and $/MT)
 const forecastData = [
@@ -50,6 +51,17 @@ const countryForecast = [
 
 export const PredictiveIntelligence = () => {
   const [timeHorizon, setTimeHorizon] = useState("3M");
+  const [unit, setUnit] = useState<"lb" | "mt">("lb");
+  const [showNY11, setShowNY11] = useState(true);
+  const [showLondon, setShowLondon] = useState(true);
+
+  // create converted series for NY11 in $/MT
+  const forecastConverted = forecastData.map((d) => ({
+    ...d,
+    ny11_mt: d.ny11 ? lbToMt(d.ny11) : undefined,
+    ny11Low_mt: d.ny11Low ? lbToMt(d.ny11Low) : undefined,
+    ny11High_mt: d.ny11High ? lbToMt(d.ny11High) : undefined,
+  }));
 
   const handleDownload = () => {
     toast({ title: "Downloading Forecast", description: "Predictive intelligence report is being prepared..." });
@@ -59,24 +71,40 @@ export const PredictiveIntelligence = () => {
     <div className="space-y-6">
       {/* Forecast Timeline */}
       <Card className="p-6">
-        <div className="mb-4 flex items-center justify-between">
+          <div className="mb-4 flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold text-foreground">Price Forecast</h3>
             <p className="text-sm text-muted-foreground">AI-powered predictions with confidence bands</p>
           </div>
-          <div className="flex gap-2">
-            <Button variant={timeHorizon === "1M" ? "default" : "outline"} size="sm" onClick={() => setTimeHorizon("1M")}>1M</Button>
-            <Button variant={timeHorizon === "3M" ? "default" : "outline"} size="sm" onClick={() => setTimeHorizon("3M")}>3M</Button>
-            <Button variant={timeHorizon === "6M" ? "default" : "outline"} size="sm" onClick={() => setTimeHorizon("6M")}>6M</Button>
-            <Button variant={timeHorizon === "12M" ? "default" : "outline"} size="sm" onClick={() => setTimeHorizon("12M")}>12M</Button>
+          <div className="flex items-center gap-4">
+            <div className="flex gap-2">
+              <Button variant={timeHorizon === "1M" ? "default" : "outline"} size="sm" onClick={() => setTimeHorizon("1M")}>1M</Button>
+              <Button variant={timeHorizon === "3M" ? "default" : "outline"} size="sm" onClick={() => setTimeHorizon("3M")}>3M</Button>
+              <Button variant={timeHorizon === "6M" ? "default" : "outline"} size="sm" onClick={() => setTimeHorizon("6M")}>6M</Button>
+              <Button variant={timeHorizon === "12M" ? "default" : "outline"} size="sm" onClick={() => setTimeHorizon("12M")}>12M</Button>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex gap-2">
+                <Button size="sm" variant={unit === "lb" ? "default" : "outline"} onClick={() => setUnit("lb")}>$/lb</Button>
+                <Button size="sm" variant={unit === "mt" ? "default" : "outline"} onClick={() => setUnit("mt")}>$/MT</Button>
+              </div>
+              <label className="flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={showNY11} onChange={() => setShowNY11(v => !v)} />
+                NY11
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={showLondon} onChange={() => setShowLondon(v => !v)} />
+                London No.5
+              </label>
+            </div>
           </div>
         </div>
         <div className="h-96 rounded-lg bg-muted/30 p-4">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={forecastData}>
+            <LineChart data={forecastConverted}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
               <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
-              <YAxis yAxisId="left" stroke="hsl(var(--primary))" label={{ value: 'NY11 ($/lb)', angle: -90, position: 'insideLeft' }} />
+              <YAxis yAxisId="left" stroke="hsl(var(--primary))" label={{ value: unit === "lb" ? 'NY11 ($/lb)' : 'NY11 ($/MT)', angle: -90, position: 'insideLeft' }} />
               <YAxis yAxisId="right" orientation="right" stroke="hsl(var(--accent))" label={{ value: 'London No.5 ($/MT)', angle: 90, position: 'insideRight' }} />
               <Tooltip 
                 contentStyle={{ 
@@ -85,17 +113,28 @@ export const PredictiveIntelligence = () => {
                   borderRadius: '8px'
                 }}
                 formatter={(value: number, name: string) => {
-                  if (name.includes('NY11')) return [`$${value.toFixed(3)}/lb`, name];
+                  if (name.includes('NY11')) {
+                    if (unit === "lb") return [`$${(value as number).toFixed(3)}/lb`, name];
+                    return [`$${Math.round((value as number))}/MT`, name];
+                  }
                   return [`$${value}/MT`, name];
                 }}
               />
               <Legend />
-              <Line yAxisId="left" type="monotone" dataKey="ny11Low" stroke="hsl(var(--primary))" strokeWidth={1} strokeDasharray="3 3" name="NY11 Low" dot={false} />
-              <Line yAxisId="left" type="monotone" dataKey="ny11" stroke="hsl(var(--primary))" strokeWidth={3} strokeDasharray="5 5" name="NY11 Forecast ($/lb)" />
-              <Line yAxisId="left" type="monotone" dataKey="ny11High" stroke="hsl(var(--primary))" strokeWidth={1} strokeDasharray="3 3" name="NY11 High" dot={false} />
-              <Line yAxisId="right" type="monotone" dataKey="london5Low" stroke="hsl(var(--accent))" strokeWidth={1} strokeDasharray="3 3" name="London Low" dot={false} />
-              <Line yAxisId="right" type="monotone" dataKey="london5" stroke="hsl(var(--accent))" strokeWidth={3} strokeDasharray="5 5" name="London No.5 Forecast ($/MT)" />
-              <Line yAxisId="right" type="monotone" dataKey="london5High" stroke="hsl(var(--accent))" strokeWidth={1} strokeDasharray="3 3" name="London High" dot={false} />
+              {showNY11 && (
+                <>
+                  <Line yAxisId="left" type="monotone" dataKey={unit === "lb" ? "ny11Low" : "ny11Low_mt"} stroke="hsl(var(--primary))" strokeWidth={1} strokeDasharray="3 3" name={`NY11 Low (${unit === "lb" ? "$/lb" : "$/MT"})`} dot={false} />
+                  <Line yAxisId="left" type="monotone" dataKey={unit === "lb" ? "ny11" : "ny11_mt"} stroke="hsl(var(--primary))" strokeWidth={3} strokeDasharray="5 5" name={`NY11 Forecast (${unit === "lb" ? "$/lb" : "$/MT"})`} />
+                  <Line yAxisId="left" type="monotone" dataKey={unit === "lb" ? "ny11High" : "ny11High_mt"} stroke="hsl(var(--primary))" strokeWidth={1} strokeDasharray="3 3" name={`NY11 High (${unit === "lb" ? "$/lb" : "$/MT"})`} dot={false} />
+                </>
+              )}
+              {showLondon && (
+                <>
+                  <Line yAxisId="right" type="monotone" dataKey="london5Low" stroke="hsl(var(--accent))" strokeWidth={1} strokeDasharray="3 3" name="London Low ($/MT)" dot={false} />
+                  <Line yAxisId="right" type="monotone" dataKey="london5" stroke="hsl(var(--accent))" strokeWidth={3} strokeDasharray="5 5" name="London No.5 Forecast ($/MT)" />
+                  <Line yAxisId="right" type="monotone" dataKey="london5High" stroke="hsl(var(--accent))" strokeWidth={1} strokeDasharray="3 3" name="London High ($/MT)" dot={false} />
+                </>
+              )}
             </LineChart>
           </ResponsiveContainer>
         </div>

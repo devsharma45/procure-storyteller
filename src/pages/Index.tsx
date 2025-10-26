@@ -11,8 +11,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <StatusBar />
-      
       <main className="container mx-auto px-6 py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold tracking-tight text-foreground">
@@ -22,6 +20,9 @@ const Index = () => {
             Complete procurement decision cycle - from market intelligence to execution
           </p>
         </div>
+
+        {/* Status bar moved below the main heading as requested */}
+        <StatusBar />
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="mb-8 grid w-full grid-cols-4 gap-4 bg-transparent p-0">
