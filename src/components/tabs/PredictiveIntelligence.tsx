@@ -6,14 +6,14 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
 
-// Forecast data with confidence bands
+// Forecast data with confidence bands (prices in $/lb and $/MT)
 const forecastData = [
-  { month: "Nov '24", ny11Low: 22.5, ny11: 24.2, ny11High: 25.8, london5Low: 620, london5: 640, london5High: 660 },
-  { month: "Dec '24", ny11Low: 23.2, ny11: 25.1, ny11High: 27.0, london5Low: 635, london5: 658, london5High: 680 },
-  { month: "Jan '25", ny11Low: 23.8, ny11: 25.8, ny11High: 27.9, london5Low: 645, london5: 670, london5High: 695 },
-  { month: "Feb '25", ny11Low: 24.5, ny11: 26.8, ny11High: 29.1, london5Low: 660, london5: 688, london5High: 715 },
-  { month: "Mar '25", ny11Low: 25.0, ny11: 27.5, ny11High: 30.0, london5Low: 670, london5: 700, london5High: 730 },
-  { month: "Apr '25", ny11Low: 25.8, ny11: 28.5, ny11High: 31.2, london5Low: 685, london5: 720, london5High: 755 },
+  { month: "Nov '24", ny11Low: 0.225, ny11: 0.242, ny11High: 0.258, london5Low: 620, london5: 640, london5High: 660 },
+  { month: "Dec '24", ny11Low: 0.232, ny11: 0.251, ny11High: 0.270, london5Low: 635, london5: 658, london5High: 680 },
+  { month: "Jan '25", ny11Low: 0.238, ny11: 0.258, ny11High: 0.279, london5Low: 645, london5: 670, london5High: 695 },
+  { month: "Feb '25", ny11Low: 0.245, ny11: 0.268, ny11High: 0.291, london5Low: 660, london5: 688, london5High: 715 },
+  { month: "Mar '25", ny11Low: 0.250, ny11: 0.275, ny11High: 0.300, london5Low: 670, london5: 700, london5High: 730 },
+  { month: "Apr '25", ny11Low: 0.258, ny11: 0.285, ny11High: 0.312, london5Low: 685, london5: 720, london5High: 755 },
 ];
 
 // Supply and demand data
@@ -76,7 +76,7 @@ export const PredictiveIntelligence = () => {
             <LineChart data={forecastData}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
               <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
-              <YAxis yAxisId="left" stroke="hsl(var(--primary))" label={{ value: 'NY11 (¢/lb)', angle: -90, position: 'insideLeft' }} />
+              <YAxis yAxisId="left" stroke="hsl(var(--primary))" label={{ value: 'NY11 ($/lb)', angle: -90, position: 'insideLeft' }} />
               <YAxis yAxisId="right" orientation="right" stroke="hsl(var(--accent))" label={{ value: 'London No.5 ($/MT)', angle: 90, position: 'insideRight' }} />
               <Tooltip 
                 contentStyle={{ 
@@ -84,14 +84,18 @@ export const PredictiveIntelligence = () => {
                   border: '1px solid hsl(var(--border))',
                   borderRadius: '8px'
                 }}
+                formatter={(value: number, name: string) => {
+                  if (name.includes('NY11')) return [`$${value.toFixed(3)}/lb`, name];
+                  return [`$${value}/MT`, name];
+                }}
               />
               <Legend />
-              <Line yAxisId="left" type="monotone" dataKey="ny11Low" stroke="hsl(var(--primary))" strokeWidth={1} strokeDasharray="5 5" name="NY11 Low" dot={false} />
-              <Line yAxisId="left" type="monotone" dataKey="ny11" stroke="hsl(var(--primary))" strokeWidth={3} name="NY11 Forecast" />
-              <Line yAxisId="left" type="monotone" dataKey="ny11High" stroke="hsl(var(--primary))" strokeWidth={1} strokeDasharray="5 5" name="NY11 High" dot={false} />
-              <Line yAxisId="right" type="monotone" dataKey="london5Low" stroke="hsl(var(--accent))" strokeWidth={1} strokeDasharray="5 5" name="London Low" dot={false} />
-              <Line yAxisId="right" type="monotone" dataKey="london5" stroke="hsl(var(--accent))" strokeWidth={3} name="London No.5 Forecast" />
-              <Line yAxisId="right" type="monotone" dataKey="london5High" stroke="hsl(var(--accent))" strokeWidth={1} strokeDasharray="5 5" name="London High" dot={false} />
+              <Line yAxisId="left" type="monotone" dataKey="ny11Low" stroke="hsl(var(--primary))" strokeWidth={1} strokeDasharray="3 3" name="NY11 Low" dot={false} />
+              <Line yAxisId="left" type="monotone" dataKey="ny11" stroke="hsl(var(--primary))" strokeWidth={3} strokeDasharray="5 5" name="NY11 Forecast ($/lb)" />
+              <Line yAxisId="left" type="monotone" dataKey="ny11High" stroke="hsl(var(--primary))" strokeWidth={1} strokeDasharray="3 3" name="NY11 High" dot={false} />
+              <Line yAxisId="right" type="monotone" dataKey="london5Low" stroke="hsl(var(--accent))" strokeWidth={1} strokeDasharray="3 3" name="London Low" dot={false} />
+              <Line yAxisId="right" type="monotone" dataKey="london5" stroke="hsl(var(--accent))" strokeWidth={3} strokeDasharray="5 5" name="London No.5 Forecast ($/MT)" />
+              <Line yAxisId="right" type="monotone" dataKey="london5High" stroke="hsl(var(--accent))" strokeWidth={1} strokeDasharray="3 3" name="London High" dot={false} />
             </LineChart>
           </ResponsiveContainer>
         </div>

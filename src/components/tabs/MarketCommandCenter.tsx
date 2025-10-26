@@ -7,17 +7,17 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 
-// Dummy price data for 6 months history + 3 months prediction
+// Dummy price data for 6 months history + 3 months prediction (prices in $/lb and $/MT)
 const priceData = [
-  { month: "May '24", ny11: 19.5, london5: 550, predicted: false },
-  { month: "Jun '24", ny11: 20.2, london5: 565, predicted: false },
-  { month: "Jul '24", ny11: 19.8, london5: 558, predicted: false },
-  { month: "Aug '24", ny11: 21.1, london5: 585, predicted: false },
-  { month: "Sep '24", ny11: 22.3, london5: 605, predicted: false },
-  { month: "Oct '24", ny11: 23.5, london5: 625, predicted: false },
-  { month: "Nov '24", ny11: 24.2, london5: 640, predicted: true },
-  { month: "Dec '24", ny11: 25.1, london5: 658, predicted: true },
-  { month: "Jan '25", ny11: 25.8, london5: 670, predicted: true },
+  { month: "May '24", ny11: 0.195, london5: 550 },
+  { month: "Jun '24", ny11: 0.202, london5: 565 },
+  { month: "Jul '24", ny11: 0.198, london5: 558 },
+  { month: "Aug '24", ny11: 0.211, london5: 585 },
+  { month: "Sep '24", ny11: 0.223, london5: 605 },
+  { month: "Oct '24", ny11: 0.235, london5: 625 },
+  { month: "Nov '24", ny11Forecast: 0.242, london5Forecast: 640 },
+  { month: "Dec '24", ny11Forecast: 0.251, london5Forecast: 658 },
+  { month: "Jan '25", ny11Forecast: 0.258, london5Forecast: 670 },
 ];
 
 export const MarketCommandCenter = () => {
@@ -154,7 +154,7 @@ export const MarketCommandCenter = () => {
               <LineChart data={priceData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
                 <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
-                <YAxis yAxisId="left" stroke="hsl(var(--primary))" label={{ value: 'NY11 (¢/lb)', angle: -90, position: 'insideLeft' }} />
+                <YAxis yAxisId="left" stroke="hsl(var(--primary))" label={{ value: 'NY11 ($/lb)', angle: -90, position: 'insideLeft' }} />
                 <YAxis yAxisId="right" orientation="right" stroke="hsl(var(--accent))" label={{ value: 'London No.5 ($/MT)', angle: 90, position: 'insideRight' }} />
                 <Tooltip 
                   contentStyle={{ 
@@ -162,23 +162,21 @@ export const MarketCommandCenter = () => {
                     border: '1px solid hsl(var(--border))',
                     borderRadius: '8px'
                   }}
+                  formatter={(value: number, name: string) => {
+                    if (name.includes('NY11')) return [`$${value.toFixed(3)}/lb`, name];
+                    return [`$${value}/MT`, name];
+                  }}
                 />
                 <Legend />
+                {/* Historical lines (solid) */}
                 <Line 
                   yAxisId="left"
                   type="monotone" 
                   dataKey="ny11" 
                   stroke="hsl(var(--primary))" 
                   strokeWidth={2}
-                  name="NY11 (¢/lb)"
-                  dot={(props) => {
-                    const { cx, cy, payload } = props;
-                    return payload.predicted ? (
-                      <circle cx={cx} cy={cy} r={4} fill="hsl(var(--primary))" strokeDasharray="3 3" />
-                    ) : (
-                      <circle cx={cx} cy={cy} r={4} fill="hsl(var(--primary))" />
-                    );
-                  }}
+                  name="NY11 ($/lb)"
+                  connectNulls
                 />
                 <Line 
                   yAxisId="right"
@@ -187,14 +185,28 @@ export const MarketCommandCenter = () => {
                   stroke="hsl(var(--accent))" 
                   strokeWidth={2}
                   name="London No.5 ($/MT)"
-                  dot={(props) => {
-                    const { cx, cy, payload } = props;
-                    return payload.predicted ? (
-                      <circle cx={cx} cy={cy} r={4} fill="hsl(var(--accent))" strokeDasharray="3 3" />
-                    ) : (
-                      <circle cx={cx} cy={cy} r={4} fill="hsl(var(--accent))" />
-                    );
-                  }}
+                  connectNulls
+                />
+                {/* Forecast lines (dashed) */}
+                <Line 
+                  yAxisId="left"
+                  type="monotone" 
+                  dataKey="ny11Forecast" 
+                  stroke="hsl(var(--primary))" 
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  name="NY11 Forecast ($/lb)"
+                  connectNulls
+                />
+                <Line 
+                  yAxisId="right"
+                  type="monotone" 
+                  dataKey="london5Forecast" 
+                  stroke="hsl(var(--accent))" 
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  name="London No.5 Forecast ($/MT)"
+                  connectNulls
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -288,8 +300,8 @@ export const MarketCommandCenter = () => {
                   </DialogHeader>
                   <div className="space-y-4 py-4">
                     <div className="space-y-2">
-                      <p className="text-sm font-medium">NY11 Target Price (¢/lb)</p>
-                      <input type="number" className="w-full rounded-md border px-3 py-2" placeholder="25.00" />
+                      <p className="text-sm font-medium">NY11 Target Price ($/lb)</p>
+                      <input type="number" step="0.001" className="w-full rounded-md border px-3 py-2" placeholder="0.250" />
                     </div>
                     <div className="space-y-2">
                       <p className="text-sm font-medium">London No.5 Target Price ($/MT)</p>
