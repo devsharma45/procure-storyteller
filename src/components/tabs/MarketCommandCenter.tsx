@@ -67,6 +67,74 @@ export const MarketCommandCenter = () => {
         />
       </div>
 
+      {/* Origin Status Cards */}
+      <Card className="p-6">
+        <h3 className="mb-4 text-lg font-semibold text-foreground">Top Sourcing Origins - Live FOB Prices</h3>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-lg border-l-4 border-[#0052A5] bg-card p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-2xl">🇧🇷</span>
+              <span className="rounded-full bg-success/10 px-2 py-1 text-xs font-semibold text-success">Available</span>
+            </div>
+            <p className="font-semibold text-foreground">Brazil</p>
+            <p className="text-2xl font-bold text-[#0052A5]">$520/MT</p>
+            <p className="text-sm text-success">▲ +2.3% (24h)</p>
+          </div>
+          <div className="rounded-lg border-l-4 border-[#ED1C24] bg-card p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-2xl">🇹🇭</span>
+              <span className="rounded-full bg-success/10 px-2 py-1 text-xs font-semibold text-success">Stable</span>
+            </div>
+            <p className="font-semibold text-foreground">Thailand</p>
+            <p className="text-2xl font-bold text-[#ED1C24]">$540/MT</p>
+            <p className="text-sm text-muted-foreground">▬ 0.0% (24h)</p>
+          </div>
+          <div className="rounded-lg border-l-4 border-[#FF9933] bg-card p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-2xl">🇮🇳</span>
+              <span className="rounded-full bg-destructive/10 px-2 py-1 text-xs font-semibold text-destructive">High Risk</span>
+            </div>
+            <p className="font-semibold text-foreground">India</p>
+            <p className="text-2xl font-bold text-[#FF9933]">$500/MT</p>
+            <p className="text-sm text-destructive">▼ -1.5% (24h)</p>
+          </div>
+          <div className="rounded-lg border-l-4 border-[#FFCD00] bg-card p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-2xl">🇦🇺</span>
+              <span className="rounded-full bg-warning/10 px-2 py-1 text-xs font-semibold text-warning">Watch</span>
+            </div>
+            <p className="font-semibold text-foreground">Australia</p>
+            <p className="text-2xl font-bold text-[#FFCD00]">$560/MT</p>
+            <p className="text-sm text-success">▲ +0.8% (24h)</p>
+          </div>
+        </div>
+      </Card>
+
+      {/* Ethanol Parity Alert */}
+      <Card className="border-l-4 border-success p-6">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <h3 className="mb-2 flex items-center gap-2 text-lg font-semibold text-foreground">
+              🇧🇷 Brazil Ethanol Parity Status
+            </h3>
+            <p className="mb-3 text-2xl font-bold text-success">54% Sugar / 46% Ethanol</p>
+            <p className="mb-2 text-sm text-muted-foreground">
+              Status: <span className="font-semibold text-success">Favorable for Sugar Production ✓</span>
+            </p>
+            <div className="space-y-1 text-sm text-muted-foreground">
+              <p>• Brent Crude: $87/barrel (stable)</p>
+              <p>• BRL/USD: 5.65 (supportive for exports)</p>
+              <p>• Mills currently prioritizing sugar over ethanol</p>
+            </div>
+          </div>
+          <div className="rounded-lg bg-success/10 p-4 text-center">
+            <p className="text-xs text-muted-foreground">Risk Score</p>
+            <p className="text-3xl font-bold text-success">35/100</p>
+            <p className="text-xs text-success">Low Risk</p>
+          </div>
+        </div>
+      </Card>
+
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Live Price Chart */}
         <Card className="col-span-2 p-6">
@@ -156,16 +224,20 @@ export const MarketCommandCenter = () => {
             <h3 className="mb-4 text-lg font-semibold text-foreground">Quick Intelligence</h3>
             <div className="space-y-3 text-sm">
               <div className="rounded-lg border bg-card p-3">
-                <p className="font-medium text-foreground">Brazil Production</p>
-                <p className="text-muted-foreground">↑ 8% YoY forecast</p>
+                <p className="font-medium text-foreground">🇧🇷 Brazil Ethanol Mix</p>
+                <p className="text-muted-foreground">54% sugar - supporting exports</p>
               </div>
               <div className="rounded-lg border bg-card p-3">
-                <p className="font-medium text-foreground">Vietnam Exports</p>
-                <p className="text-muted-foreground">↓ 12% due to drought</p>
+                <p className="font-medium text-foreground">🇮🇳 India Policy Alert</p>
+                <p className="text-destructive">Export quota likely - 3M MT cap</p>
               </div>
               <div className="rounded-lg border bg-card p-3">
-                <p className="font-medium text-foreground">US Consumption</p>
-                <p className="text-muted-foreground">Steady at 23M bags</p>
+                <p className="font-medium text-foreground">🇹🇭 Thailand Production</p>
+                <p className="text-muted-foreground">Stable at 11.5M MT</p>
+              </div>
+              <div className="rounded-lg border bg-card p-3">
+                <p className="font-medium text-foreground">🇦🇺 Australia Weather</p>
+                <p className="text-warning">Drought watch - monitoring closely</p>
               </div>
             </div>
             <div className="mt-4 flex gap-2">

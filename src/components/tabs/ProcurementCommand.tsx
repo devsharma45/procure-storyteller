@@ -1,29 +1,35 @@
+import { Sparkles, Calendar, Globe, TrendingUp, Package, FileText, Send, Truck, Target } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, MapPin, Users, CheckSquare, FileText } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, ZAxis } from "recharts";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 
-// Purchase timeline data
+// Dummy purchase timeline data by country
 const purchaseTimelineData = [
-  { month: "Nov '24", optimal: 45000, actual: 42000, recommended: 48000 },
-  { month: "Dec '24", optimal: 52000, actual: 0, recommended: 55000 },
-  { month: "Jan '25", optimal: 48000, actual: 0, recommended: 50000 },
-  { month: "Feb '25", optimal: 38000, actual: 0, recommended: 40000 },
-  { month: "Mar '25", optimal: 55000, actual: 0, recommended: 58000 },
-  { month: "Apr '25", optimal: 62000, actual: 0, recommended: 65000 },
+  { month: "Nov '24", brazil: 12, thailand: 6, australia: 4, india: 0, total: 22 },
+  { month: "Dec '24", brazil: 15, thailand: 8, australia: 5, india: 0, total: 28 },
+  { month: "Jan '25", brazil: 18, thailand: 10, australia: 5, india: 2, total: 35 },
+  { month: "Feb '25", brazil: 16, thailand: 9, australia: 4, india: 1, total: 30 },
+  { month: "Mar '25", brazil: 20, thailand: 12, australia: 5, india: 1, total: 38 },
+  { month: "Apr '25", brazil: 22, thailand: 11, australia: 5, india: 2, total: 40 },
 ];
 
-// Origin mix data
+// Origin mix data with country colors
 const originMixData = [
-  { name: "Brazil", value: 45, cost: 620 },
-  { name: "Vietnam", value: 25, cost: 645 },
-  { name: "Colombia", value: 20, cost: 635 },
-  { name: "India", value: 10, cost: 655 },
+  { name: "🇧🇷 Brazil", value: 45, color: "#0052A5" },
+  { name: "🇹🇭 Thailand", value: 30, color: "#ED1C24" },
+  { name: "🇦🇺 Australia", value: 20, color: "#FFCD00" },
+  { name: "🇮🇳 India", value: 5, color: "#FF9933" },
 ];
 
-const COLORS = ['hsl(var(--primary))', 'hsl(var(--accent))', 'hsl(var(--success))', 'hsl(var(--warning))'];
+// Risk-return matrix data
+const riskReturnData = [
+  { country: "🇧🇷 Brazil", cost: 520, reliability: 75, size: 45 },
+  { country: "🇹🇭 Thailand", cost: 540, reliability: 85, size: 30 },
+  { country: "🇦🇺 Australia", cost: 560, reliability: 90, size: 20 },
+  { country: "🇮🇳 India", cost: 500, reliability: 40, size: 5 },
+];
 
 export const ProcurementCommand = () => {
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -42,49 +48,27 @@ export const ProcurementCommand = () => {
   
   return (
     <div className="space-y-6">
-      {/* Optimal Purchase Calendar */}
+      {/* AI Purchase Calendar by Country */}
       <Card className="p-6">
         <div className="mb-4 flex items-center justify-between">
           <div>
             <h3 className="flex items-center gap-2 text-lg font-semibold text-foreground">
-              <Calendar className="h-5 w-5" />
-              AI-Optimized Purchase Calendar
+              <Sparkles className="h-5 w-5 text-accent" />
+              AI-Optimized Purchase Calendar by Origin
             </h3>
-            <p className="text-sm text-muted-foreground">Recommended buying windows for 2025</p>
+            <p className="text-sm text-muted-foreground">Country-specific optimal buy windows</p>
           </div>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button>Generate PO</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Generate Purchase Order</DialogTitle>
-                <DialogDescription>
-                  Create a new PO based on AI recommendations.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Volume (MT)</p>
-                  <input type="number" className="w-full rounded-md border px-3 py-2" placeholder="50000" />
-                </div>
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Delivery Month</p>
-                  <select className="w-full rounded-md border px-3 py-2">
-                    {months.map(m => <option key={m}>{m}</option>)}
-                  </select>
-                </div>
-                <Button className="w-full" onClick={handleCreatePO}>Generate PO</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+          <Button variant="outline" size="sm" onClick={() => toast({ title: "Exporting Calendar", description: "Downloading 6-month procurement timeline..." })}>
+            <Calendar className="h-4 w-4" />
+            Export Calendar
+          </Button>
         </div>
-        <div className="h-80 rounded-lg bg-muted/30 p-4">
+        <div className="mb-4 h-80 rounded-lg bg-muted/30 p-4">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={purchaseTimelineData}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
               <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
-              <YAxis stroke="hsl(var(--muted-foreground))" label={{ value: 'Volume (MT)', angle: -90, position: 'insideLeft' }} />
+              <YAxis stroke="hsl(var(--muted-foreground))" label={{ value: 'Quantity (K MT)', angle: -90, position: 'insideLeft' }} />
               <Tooltip 
                 contentStyle={{ 
                   backgroundColor: 'hsl(var(--card))', 
@@ -93,22 +77,41 @@ export const ProcurementCommand = () => {
                 }}
               />
               <Legend />
-              <Bar dataKey="actual" fill="hsl(var(--success))" name="Actual Purchases" />
-              <Bar dataKey="optimal" fill="hsl(var(--primary))" name="Optimal Window" />
-              <Bar dataKey="recommended" fill="hsl(var(--accent))" name="AI Recommended" />
+              <Bar dataKey="brazil" stackId="a" fill="#0052A5" name="🇧🇷 Brazil" />
+              <Bar dataKey="thailand" stackId="a" fill="#ED1C24" name="🇹🇭 Thailand" />
+              <Bar dataKey="australia" stackId="a" fill="#FFCD00" name="🇦🇺 Australia" />
+              <Bar dataKey="india" stackId="a" fill="#FF9933" name="🇮🇳 India" />
             </BarChart>
           </ResponsiveContainer>
         </div>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
+          <div className="rounded-lg border-l-4 border-[#0052A5] bg-card p-3">
+            <p className="text-sm font-semibold text-foreground">🇧🇷 Brazil</p>
+            <p className="text-xs text-success">✓ Buy now - ethanol parity favorable</p>
+          </div>
+          <div className="rounded-lg border-l-4 border-[#ED1C24] bg-card p-3">
+            <p className="text-sm font-semibold text-foreground">🇹🇭 Thailand</p>
+            <p className="text-xs text-success">✓ Reliable - negotiate volume discounts</p>
+          </div>
+          <div className="rounded-lg border-l-4 border-[#FFCD00] bg-card p-3">
+            <p className="text-sm font-semibold text-foreground">🇦🇺 Australia</p>
+            <p className="text-xs text-warning">⚠ Quality hedge - premium pricing</p>
+          </div>
+          <div className="rounded-lg border-l-4 border-[#FF9933] bg-card p-3">
+            <p className="text-sm font-semibold text-foreground">🇮🇳 India</p>
+            <p className="text-xs text-destructive">✕ Avoid - quota risk imminent</p>
+          </div>
+        </div>
       </Card>
 
+      {/* Origin Mix & Risk-Return Matrix */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Origin Mix Optimizer */}
         <Card className="p-6">
           <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
-            <MapPin className="h-5 w-5" />
-            Origin Mix Optimization
+            <Globe className="h-5 w-5 text-primary" />
+            Optimal Origin Mix
           </h3>
-          <div className="h-64 rounded-lg bg-muted/30 p-4">
+          <div className="mb-4 h-64 rounded-lg bg-muted/30 p-4">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -122,101 +125,127 @@ export const ProcurementCommand = () => {
                   dataKey="value"
                 >
                   {originMixData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="space-y-2 text-sm">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-3 w-3 rounded-full bg-[#0052A5]" />
+                <span className="text-muted-foreground">🇧🇷 Brazil (Lowest Cost)</span>
+              </div>
+              <span className="font-semibold text-foreground">45%</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-3 w-3 rounded-full bg-[#ED1C24]" />
+                <span className="text-muted-foreground">🇹🇭 Thailand (Proximity)</span>
+              </div>
+              <span className="font-semibold text-foreground">30%</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-3 w-3 rounded-full bg-[#FFCD00]" />
+                <span className="text-muted-foreground">🇦🇺 Australia (Quality)</span>
+              </div>
+              <span className="font-semibold text-foreground">20%</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-3 w-3 rounded-full bg-[#FF9933]" />
+                <span className="text-muted-foreground">🇮🇳 India (Opportunistic)</span>
+              </div>
+              <span className="font-semibold text-foreground">5%</span>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-6">
+          <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
+            <Target className="h-5 w-5 text-accent" />
+            Origin Risk-Return Matrix
+          </h3>
+          <div className="mb-4 h-64 rounded-lg bg-muted/30 p-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
+                <XAxis 
+                  type="number" 
+                  dataKey="cost" 
+                  name="Cost" 
+                  unit="/MT"
+                  domain={[480, 580]}
+                  stroke="hsl(var(--muted-foreground))"
+                  label={{ value: 'Cost ($/MT)', position: 'bottom' }}
+                />
+                <YAxis 
+                  type="number" 
+                  dataKey="reliability" 
+                  name="Reliability" 
+                  unit="%"
+                  domain={[30, 95]}
+                  stroke="hsl(var(--muted-foreground))"
+                  label={{ value: 'Supply Reliability', angle: -90, position: 'left' }}
+                />
+                <ZAxis type="number" dataKey="size" range={[400, 1000]} />
                 <Tooltip 
+                  cursor={{ strokeDasharray: '3 3' }}
                   contentStyle={{ 
                     backgroundColor: 'hsl(var(--card))', 
                     border: '1px solid hsl(var(--border))',
                     borderRadius: '8px'
                   }}
+                  content={({ payload }) => {
+                    if (payload && payload.length) {
+                      const data = payload[0].payload;
+                      return (
+                        <div className="rounded-lg border bg-card p-2">
+                          <p className="font-semibold">{data.country}</p>
+                          <p className="text-sm">Cost: ${data.cost}/MT</p>
+                          <p className="text-sm">Reliability: {data.reliability}%</p>
+                          <p className="text-sm">Share: {data.size}%</p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
                 />
-              </PieChart>
+                <Scatter name="Countries" data={riskReturnData} fill="hsl(var(--primary))">
+                  {riskReturnData.map((entry, index) => (
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={
+                        entry.country.includes("🇧🇷") ? "#0052A5" :
+                        entry.country.includes("🇹🇭") ? "#ED1C24" :
+                        entry.country.includes("🇦🇺") ? "#FFCD00" :
+                        "#FF9933"
+                      } 
+                    />
+                  ))}
+                </Scatter>
+              </ScatterChart>
             </ResponsiveContainer>
           </div>
-          <div className="mt-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="h-4 w-4 rounded-full" style={{ backgroundColor: COLORS[0] }} />
-                <span className="text-sm text-foreground">Brazil</span>
-              </div>
-              <span className="font-semibold text-foreground">45% • $620/MT</span>
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="rounded bg-success/10 p-2 text-center">
+              <p className="font-semibold text-success">Best Value</p>
+              <p className="text-muted-foreground">Low Cost + High Reliability</p>
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="h-4 w-4 rounded-full" style={{ backgroundColor: COLORS[1] }} />
-                <span className="text-sm text-foreground">Vietnam</span>
-              </div>
-              <span className="font-semibold text-foreground">25% • $645/MT</span>
+            <div className="rounded bg-accent/10 p-2 text-center">
+              <p className="font-semibold text-accent">Premium Reliable</p>
+              <p className="text-muted-foreground">High Cost + High Reliability</p>
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="h-4 w-4 rounded-full" style={{ backgroundColor: COLORS[2] }} />
-                <span className="text-sm text-foreground">Colombia</span>
-              </div>
-              <span className="font-semibold text-foreground">20% • $635/MT</span>
+            <div className="rounded bg-warning/10 p-2 text-center">
+              <p className="font-semibold text-warning">Risky Cheap</p>
+              <p className="text-muted-foreground">Low Cost + Low Reliability</p>
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="h-4 w-4 rounded-full" style={{ backgroundColor: COLORS[3] }} />
-                <span className="text-sm text-foreground">India</span>
-              </div>
-              <span className="font-semibold text-foreground">10% • $655/MT</span>
-            </div>
-          </div>
-          <Button className="mt-4 w-full" variant="outline" onClick={() => toast({ title: "Optimizing Mix", description: "Analyzing optimal sourcing distribution..." })}>
-            Optimize Mix
-          </Button>
-        </Card>
-
-        {/* Progress Tracker */}
-        <Card className="p-6">
-          <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
-            <CheckSquare className="h-5 w-5" />
-            Progress vs Recommendations
-          </h3>
-          <div className="space-y-6">
-            <div>
-              <div className="mb-2 flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Overall Progress</span>
-                <span className="font-semibold text-foreground">37%</span>
-              </div>
-              <div className="h-3 w-full overflow-hidden rounded-full bg-muted">
-                <div className="h-full w-[37%] bg-accent transition-all" />
-              </div>
-            </div>
-            
-            <div className="space-y-3">
-              <div className="rounded-lg border bg-card p-4">
-                <div className="mb-2 flex items-center justify-between">
-                  <span className="text-sm font-medium text-foreground">Brazil</span>
-                  <span className="text-xs text-muted-foreground">82,500 / 225,000 MT</span>
-                </div>
-                <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                  <div className="h-full w-[37%] bg-success" />
-                </div>
-              </div>
-              
-              <div className="rounded-lg border bg-card p-4">
-                <div className="mb-2 flex items-center justify-between">
-                  <span className="text-sm font-medium text-foreground">Colombia</span>
-                  <span className="text-xs text-muted-foreground">55,500 / 150,000 MT</span>
-                </div>
-                <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                  <div className="h-full w-[37%] bg-warning" />
-                </div>
-              </div>
-              
-              <div className="rounded-lg border bg-card p-4">
-                <div className="mb-2 flex items-center justify-between">
-                  <span className="text-sm font-medium text-foreground">Vietnam</span>
-                  <span className="text-xs text-muted-foreground">27,750 / 75,000 MT</span>
-                </div>
-                <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                  <div className="h-full w-[37%] bg-destructive" />
-                </div>
-              </div>
+            <div className="rounded bg-destructive/10 p-2 text-center">
+              <p className="font-semibold text-destructive">Avoid</p>
+              <p className="text-muted-foreground">High Cost + Low Reliability</p>
             </div>
           </div>
         </Card>
@@ -225,8 +254,8 @@ export const ProcurementCommand = () => {
       {/* Quick Actions */}
       <Card className="p-6">
         <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
-          <Users className="h-5 w-5" />
-          Quick Actions & Team Assignments
+          <Package className="h-5 w-5" />
+          Quick Actions & Execution
         </h3>
         <div className="flex flex-wrap gap-2">
           <Dialog>
@@ -248,10 +277,10 @@ export const ProcurementCommand = () => {
                 <div className="space-y-2">
                   <p className="text-sm font-medium">Origin</p>
                   <select className="w-full rounded-md border px-3 py-2">
-                    <option>Brazil</option>
-                    <option>Vietnam</option>
-                    <option>Colombia</option>
-                    <option>India</option>
+                    <option>🇧🇷 Brazil</option>
+                    <option>🇹🇭 Thailand</option>
+                    <option>🇦🇺 Australia</option>
+                    <option>🇮🇳 India</option>
                   </select>
                 </div>
                 <div className="space-y-2">
@@ -281,9 +310,9 @@ export const ProcurementCommand = () => {
                 <div className="space-y-2">
                   <p className="text-sm font-medium">Preferred Origins</p>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm">Brazil</Button>
-                    <Button variant="outline" size="sm">Vietnam</Button>
-                    <Button variant="outline" size="sm">Colombia</Button>
+                    <Button variant="outline" size="sm">🇧🇷 Brazil</Button>
+                    <Button variant="outline" size="sm">🇹🇭 Thailand</Button>
+                    <Button variant="outline" size="sm">🇦🇺 Australia</Button>
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -313,9 +342,10 @@ export const ProcurementCommand = () => {
                 <div className="space-y-2">
                   <p className="text-sm font-medium">Origin Port</p>
                   <select className="w-full rounded-md border px-3 py-2">
-                    <option>Santos, Brazil</option>
-                    <option>Ho Chi Minh, Vietnam</option>
-                    <option>Buenaventura, Colombia</option>
+                    <option>🇧🇷 Santos, Brazil</option>
+                    <option>🇹🇭 Bangkok, Thailand</option>
+                    <option>🇦🇺 Sydney, Australia</option>
+                    <option>🇮🇳 Mumbai, India</option>
                   </select>
                 </div>
                 <div className="space-y-2">

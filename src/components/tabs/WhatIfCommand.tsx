@@ -48,33 +48,55 @@ export const WhatIfCommand = () => {
 
   return (
     <div className="space-y-6">
-      {/* Scenario Builder */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <Card className="p-6">
-          <h3 className="mb-4 text-lg font-semibold text-foreground">Scenario Library</h3>
-          <div className="space-y-2">
-            {scenarios.map((scenario) => (
-              <button
-                key={scenario.id}
-                onClick={() => handleRunScenario(scenario.name)}
-                className="w-full rounded-lg border bg-card p-3 text-left transition-colors hover:bg-accent/10"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-medium text-foreground">{scenario.name}</span>
-                  {scenario.status === "active" && (
-                    <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-semibold text-accent-foreground">
-                      Active
-                    </span>
-                  )}
-                </div>
-                <p className="mt-1 text-sm text-muted-foreground">Impact: {scenario.impact}</p>
-              </button>
-            ))}
+      {/* Scenario Library */}
+      <Card className="p-6">
+        <h3 className="mb-4 text-lg font-semibold text-foreground">Pre-Configured Scenarios</h3>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-lg border-l-4 border-[#28A745] bg-card p-4">
+            <p className="mb-1 flex items-center gap-2 font-semibold text-foreground">
+              🇧🇷 Brazil Ethanol Shift
+            </p>
+            <p className="mb-2 text-sm text-muted-foreground">Oil → $100/barrel</p>
+            <p className="mb-3 text-xs text-muted-foreground">Sugar mix drops to 45%<br/>Global supply -3M MT</p>
+            <Button size="sm" variant="outline" onClick={() => handleRunScenario("Brazil Ethanol Shift")}>
+              Run Scenario
+            </Button>
           </div>
-          <Button className="mt-4 w-full" variant="outline" onClick={() => toast({ title: "Custom Scenario", description: "Opening scenario builder..." })}>
-            + Create Custom Scenario
-          </Button>
-        </Card>
+          <div className="rounded-lg border-l-4 border-[#FF9933] bg-card p-4">
+            <p className="mb-1 flex items-center gap-2 font-semibold text-foreground">
+              🇮🇳 India Export Ban
+            </p>
+            <p className="mb-2 text-sm text-muted-foreground">Full export restriction</p>
+            <p className="mb-3 text-xs text-muted-foreground">6M MT removed from market<br/>Prices spike +$45/MT</p>
+            <Button size="sm" variant="outline" onClick={() => handleRunScenario("India Export Ban")}>
+              Run Scenario
+            </Button>
+          </div>
+          <div className="rounded-lg border-l-4 border-[#ED1C24] bg-card p-4">
+            <p className="mb-1 flex items-center gap-2 font-semibold text-foreground">
+              🇹🇭 Thailand Weather Shock
+            </p>
+            <p className="mb-2 text-sm text-muted-foreground">Drought reduces 15%</p>
+            <p className="mb-3 text-xs text-muted-foreground">Export volumes down 1.7M MT<br/>Freight shifts to Brazil</p>
+            <Button size="sm" variant="outline" onClick={() => handleRunScenario("Thailand Weather Shock")}>
+              Run Scenario
+            </Button>
+          </div>
+          <div className="rounded-lg border-l-4 border-destructive bg-card p-4">
+            <p className="mb-1 flex items-center gap-2 font-semibold text-foreground">
+              🌍 Multi-Country Crisis
+            </p>
+            <p className="mb-2 text-sm text-muted-foreground">Combined shocks</p>
+            <p className="mb-3 text-xs text-muted-foreground">Brazil ethanol + India ban<br/>+ Thailand drought</p>
+            <Button size="sm" variant="outline" onClick={() => handleRunScenario("Multi-Country Crisis")}>
+              Run Scenario
+            </Button>
+          </div>
+        </div>
+      </Card>
+
+      {/* Scenario Builder Grid */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
 
         <Card className="col-span-2 p-6">
           <h3 className="mb-4 text-lg font-semibold text-foreground">Impact Visualization</h3>

@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { TrendingUp, Cloud, Globe, AlertTriangle, Download } from "lucide-react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from "recharts";
+import { TrendingUp, Cloud, Globe, AlertTriangle, Download, Droplet, DollarSign, Fuel } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, AreaChart, Area } from "recharts";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
@@ -19,9 +19,33 @@ const forecastData = [
 // Supply and demand data
 const supplyDemandData = [
   { region: "Brazil", supply: 42, demand: 37, surplus: 5 },
-  { region: "Vietnam", supply: 18, demand: 20, surplus: -2 },
-  { region: "Colombia", supply: 15, demand: 15, surplus: 0 },
+  { region: "Thailand", supply: 18, demand: 16, surplus: 2 },
   { region: "India", supply: 35, demand: 38, surplus: -3 },
+  { region: "Australia", supply: 5, demand: 4, surplus: 1 },
+];
+
+// Brazil ethanol mix data (historical + forecast)
+const ethanolMixData = [
+  { month: "May '24", sugar: 58, ethanol: 42 },
+  { month: "Jun '24", sugar: 57, ethanol: 43 },
+  { month: "Jul '24", sugar: 56, ethanol: 44 },
+  { month: "Aug '24", sugar: 55, ethanol: 45 },
+  { month: "Sep '24", sugar: 54, ethanol: 46 },
+  { month: "Oct '24", sugar: 54, ethanol: 46 },
+  { month: "Nov '24", sugar: 53, ethanol: 47 },
+  { month: "Dec '24", sugar: 52, ethanol: 48 },
+  { month: "Jan '25", sugar: 51, ethanol: 49 },
+  { month: "Feb '25", sugar: 50, ethanol: 50 },
+  { month: "Mar '25", sugar: 50, ethanol: 50 },
+  { month: "Apr '25", sugar: 49, ethanol: 51 },
+];
+
+// Country production forecast
+const countryForecast = [
+  { country: "🇧🇷 Brazil", current: "29.4M", forecast: "30.2M", export: "High", risk: "Medium", recommendation: "Primary source - lock prices now" },
+  { country: "🇹🇭 Thailand", current: "11.5M", forecast: "11.8M", export: "High", risk: "Low", recommendation: "Reliable backup - negotiate volume" },
+  { country: "🇮🇳 India", current: "6.1M", forecast: "5.8M", export: "Limited", risk: "High", recommendation: "Avoid - quota risk imminent" },
+  { country: "🇦🇺 Australia", current: "3.2M", forecast: "3.0M", export: "Medium", risk: "Medium", recommendation: "Quality hedge - premium pricing" },
 ];
 
 export const PredictiveIntelligence = () => {
@@ -92,6 +116,136 @@ export const PredictiveIntelligence = () => {
         </div>
       </Card>
 
+      {/* Brazil Ethanol Dynamics - Full Width Priority */}
+      <Card className="p-6">
+        <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
+          🇧🇷 Brazil Sugar vs Ethanol Production Mix
+        </h3>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <div className="mb-4 h-64 rounded-lg bg-muted/30 p-4">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={ethanolMixData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
+                  <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
+                  <YAxis stroke="hsl(var(--muted-foreground))" label={{ value: 'Allocation %', angle: -90, position: 'insideLeft' }} />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--card))', 
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Legend />
+                  <Area type="monotone" dataKey="sugar" stackId="1" stroke="#0052A5" fill="#0052A5" name="Sugar %" />
+                  <Area type="monotone" dataKey="ethanol" stackId="1" stroke="#28A745" fill="#28A745" name="Ethanol %" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex items-center justify-between rounded-lg border bg-card p-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Current Mix (Oct 2024)</p>
+                <p className="text-xl font-bold text-foreground">54% Sugar / 46% Ethanol</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Forecast (Apr 2025)</p>
+                <p className="text-xl font-bold text-warning">49% Sugar / 51% Ethanol</p>
+              </div>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div className="rounded-lg border bg-card p-4">
+              <div className="mb-2 flex items-center justify-between">
+                <Fuel className="h-5 w-5 text-warning" />
+                <span className="text-xs font-semibold text-warning">Live</span>
+              </div>
+              <p className="text-sm text-muted-foreground">Brent Crude</p>
+              <p className="text-2xl font-bold text-foreground">$87/barrel</p>
+              <p className="text-xs text-muted-foreground">Trend: Stable</p>
+            </div>
+            <div className="rounded-lg border bg-card p-4">
+              <div className="mb-2 flex items-center justify-between">
+                <DollarSign className="h-5 w-5 text-accent" />
+                <span className="text-xs font-semibold text-success">Favorable</span>
+              </div>
+              <p className="text-sm text-muted-foreground">BRL/USD Exchange</p>
+              <p className="text-2xl font-bold text-foreground">5.65</p>
+              <p className="text-xs text-success">Positive for exports</p>
+            </div>
+            <div className="rounded-lg border bg-card p-4">
+              <div className="mb-2 flex items-center justify-between">
+                <TrendingUp className="h-5 w-5 text-primary" />
+                <span className="text-xs font-semibold text-muted-foreground">Growing</span>
+              </div>
+              <p className="text-sm text-muted-foreground">Corn Ethanol Share</p>
+              <p className="text-2xl font-bold text-foreground">18%</p>
+              <p className="text-xs text-muted-foreground">Up from 15% YoY</p>
+            </div>
+            <div className="rounded-lg bg-gradient-to-r from-success/20 via-warning/20 to-destructive/20 p-4">
+              <p className="mb-2 text-xs font-semibold text-muted-foreground">Oil Parity Index</p>
+              <div className="mb-2 flex justify-between text-xs">
+                <span className="text-destructive">Favors Ethanol</span>
+                <span className="text-success">Favors Sugar</span>
+              </div>
+              <div className="relative h-3 w-full overflow-hidden rounded-full bg-muted">
+                <div className="absolute h-full w-[60%] bg-success" />
+              </div>
+              <p className="mt-2 text-center text-sm font-semibold text-success">Currently Favorable for Sugar</p>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* Country Production Forecast Table */}
+      <Card className="p-6">
+        <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
+          <Globe className="h-5 w-5 text-primary" />
+          Country Production & Export Forecast
+        </h3>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b">
+                <th className="pb-3 text-left text-sm font-semibold text-muted-foreground">Country</th>
+                <th className="pb-3 text-left text-sm font-semibold text-muted-foreground">Current</th>
+                <th className="pb-3 text-left text-sm font-semibold text-muted-foreground">Forecast Q1</th>
+                <th className="pb-3 text-left text-sm font-semibold text-muted-foreground">Export</th>
+                <th className="pb-3 text-left text-sm font-semibold text-muted-foreground">Policy Risk</th>
+                <th className="pb-3 text-left text-sm font-semibold text-muted-foreground">Recommendation</th>
+              </tr>
+            </thead>
+            <tbody>
+              {countryForecast.map((item, idx) => (
+                <tr key={idx} className="border-b last:border-0">
+                  <td className="py-3 font-medium text-foreground">{item.country}</td>
+                  <td className="py-3 text-muted-foreground">{item.current}</td>
+                  <td className="py-3 text-muted-foreground">{item.forecast}</td>
+                  <td className="py-3">
+                    <span className={`rounded-full px-2 py-1 text-xs font-semibold ${
+                      item.export === "High" ? "bg-success/10 text-success" :
+                      item.export === "Medium" ? "bg-warning/10 text-warning" :
+                      "bg-destructive/10 text-destructive"
+                    }`}>
+                      {item.export}
+                    </span>
+                  </td>
+                  <td className="py-3">
+                    <span className={`rounded-full px-2 py-1 text-xs font-semibold ${
+                      item.risk === "Low" ? "bg-success/10 text-success" :
+                      item.risk === "Medium" ? "bg-warning/10 text-warning" :
+                      "bg-destructive/10 text-destructive"
+                    }`}>
+                      {item.risk}
+                    </span>
+                  </td>
+                  <td className="py-3 text-sm text-muted-foreground">{item.recommendation}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
       {/* Key Drivers & Supply Demand */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card className="p-6">
@@ -156,16 +310,20 @@ export const PredictiveIntelligence = () => {
           </div>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Brazil</span>
+              <span className="text-sm text-muted-foreground">🇧🇷 Brazil</span>
               <span className="font-semibold text-success">Surplus +12%</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Vietnam</span>
+              <span className="text-sm text-muted-foreground">🇹🇭 Thailand</span>
+              <span className="font-semibold text-success">Surplus +11%</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">🇮🇳 India</span>
               <span className="font-semibold text-destructive">Deficit -8%</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Colombia</span>
-              <span className="font-semibold text-foreground">Balanced</span>
+              <span className="text-sm text-muted-foreground">🇦🇺 Australia</span>
+              <span className="font-semibold text-success">Surplus +20%</span>
             </div>
           </div>
         </Card>
