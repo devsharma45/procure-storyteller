@@ -49,8 +49,19 @@ const countryForecast = [
   { country: "🇦🇺 Australia", current: "3.2M", forecast: "3.0M", export: "Medium", risk: "Medium", recommendation: "Quality hedge - premium pricing" },
 ];
 
+// Production forecast data by country (in Million MT)
+const productionForecastData = [
+  { month: "Nov '24", brazil: 29.4, thailand: 11.5, india: 6.1, australia: 3.2 },
+  { month: "Dec '24", brazil: 29.6, thailand: 11.6, india: 6.0, australia: 3.1 },
+  { month: "Jan '25", brazil: 29.8, thailand: 11.7, india: 5.9, australia: 3.1 },
+  { month: "Feb '25", brazil: 30.0, thailand: 11.75, india: 5.85, australia: 3.05 },
+  { month: "Mar '25", brazil: 30.1, thailand: 11.78, india: 5.82, australia: 3.02 },
+  { month: "Apr '25", brazil: 30.2, thailand: 11.8, india: 5.8, australia: 3.0 },
+];
+
 export const PredictiveIntelligence = () => {
   const [timeHorizon, setTimeHorizon] = useState("3M");
+  const [productionTimeHorizon, setProductionTimeHorizon] = useState("3M");
   const [unit, setUnit] = useState<"lb" | "mt">("lb");
   const [showNY11, setShowNY11] = useState(true);
   const [showLondon, setShowLondon] = useState(true);
@@ -155,6 +166,66 @@ export const PredictiveIntelligence = () => {
           <div className="text-right">
             <p className="text-2xl font-bold text-accent">87%</p>
             <p className="text-xs text-muted-foreground">Last 12 months</p>
+          </div>
+        </div>
+      </Card>
+
+      {/* Production Forecast by Country */}
+      <Card className="p-6">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-foreground">Production Forecast by Country</h3>
+            <p className="text-sm text-muted-foreground">Projected sugar production volumes (Million MT)</p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant={productionTimeHorizon === "1M" ? "default" : "outline"} size="sm" onClick={() => setProductionTimeHorizon("1M")}>1M</Button>
+            <Button variant={productionTimeHorizon === "3M" ? "default" : "outline"} size="sm" onClick={() => setProductionTimeHorizon("3M")}>3M</Button>
+            <Button variant={productionTimeHorizon === "6M" ? "default" : "outline"} size="sm" onClick={() => setProductionTimeHorizon("6M")}>6M</Button>
+            <Button variant={productionTimeHorizon === "12M" ? "default" : "outline"} size="sm" onClick={() => setProductionTimeHorizon("12M")}>12M</Button>
+          </div>
+        </div>
+        <div className="h-96 rounded-lg bg-muted/30 p-4">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={productionForecastData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
+              <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
+              <YAxis stroke="hsl(var(--muted-foreground))" label={{ value: 'Production (Million MT)', angle: -90, position: 'insideLeft' }} />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: 'hsl(var(--card))', 
+                  border: '1px solid hsl(var(--border))',
+                  borderRadius: '8px'
+                }}
+                formatter={(value: number) => [`${value}M MT`, '']}
+              />
+              <Legend />
+              <Line type="monotone" dataKey="brazil" stroke="#009B3A" strokeWidth={2} name="🇧🇷 Brazil" />
+              <Line type="monotone" dataKey="thailand" stroke="#A51931" strokeWidth={2} name="🇹🇭 Thailand" />
+              <Line type="monotone" dataKey="india" stroke="#FF9933" strokeWidth={2} name="🇮🇳 India" />
+              <Line type="monotone" dataKey="australia" stroke="#00008B" strokeWidth={2} name="🇦🇺 Australia" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="rounded-lg border bg-card p-4">
+            <p className="text-sm text-muted-foreground">🇧🇷 Brazil</p>
+            <p className="text-2xl font-bold text-foreground">30.2M MT</p>
+            <p className="text-xs text-success">+2.7% vs current</p>
+          </div>
+          <div className="rounded-lg border bg-card p-4">
+            <p className="text-sm text-muted-foreground">🇹🇭 Thailand</p>
+            <p className="text-2xl font-bold text-foreground">11.8M MT</p>
+            <p className="text-xs text-success">+2.6% vs current</p>
+          </div>
+          <div className="rounded-lg border bg-card p-4">
+            <p className="text-sm text-muted-foreground">🇮🇳 India</p>
+            <p className="text-2xl font-bold text-foreground">5.8M MT</p>
+            <p className="text-xs text-destructive">-4.9% vs current</p>
+          </div>
+          <div className="rounded-lg border bg-card p-4">
+            <p className="text-sm text-muted-foreground">🇦🇺 Australia</p>
+            <p className="text-2xl font-bold text-foreground">3.0M MT</p>
+            <p className="text-xs text-destructive">-6.3% vs current</p>
           </div>
         </div>
       </Card>
