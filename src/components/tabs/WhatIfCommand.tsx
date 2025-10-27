@@ -5,22 +5,23 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { lbToMt } from "@/lib/utils";
 
-// Scenario impact data
+// Scenario impact data - prices in $/MT
 const scenarioImpactData = [
-  { scenario: "Current", ny11: 24.2, london5: 640, cost: 100, risk: 35 },
-  { scenario: "Brazil Drought", ny11: 28.5, london5: 720, cost: 118, risk: 68 },
-  { scenario: "Export Ban", ny11: 31.2, london5: 785, cost: 129, risk: 82 },
-  { scenario: "Optimized", ny11: 23.8, london5: 625, cost: 98, risk: 22 },
+  { scenario: "Current", ny11: 533, london5: 640, cost: 100, risk: 35 },
+  { scenario: "Brazil Drought", ny11: 628, london5: 720, cost: 118, risk: 68 },
+  { scenario: "Export Ban", ny11: 688, london5: 785, cost: 129, risk: 82 },
+  { scenario: "Optimized", ny11: 524, london5: 625, cost: 98, risk: 22 },
 ];
 
-// Timeline comparison data
+// Timeline comparison data - prices in $/MT
 const timelineData = [
-  { month: "Nov", baseline: 24.2, drought: 25.8, exportBan: 26.5 },
-  { month: "Dec", baseline: 25.1, drought: 27.2, exportBan: 28.8 },
-  { month: "Jan", baseline: 25.8, drought: 28.5, exportBan: 31.2 },
-  { month: "Feb", baseline: 26.2, drought: 29.8, exportBan: 33.5 },
-  { month: "Mar", baseline: 26.8, drought: 31.2, exportBan: 35.8 },
+  { month: "Nov", baseline: 533, drought: 569, exportBan: 584 },
+  { month: "Dec", baseline: 553, drought: 599, exportBan: 635 },
+  { month: "Jan", baseline: 569, drought: 628, exportBan: 688 },
+  { month: "Feb", baseline: 577, drought: 657, exportBan: 738 },
+  { month: "Mar", baseline: 591, drought: 688, exportBan: 789 },
 ];
 
 export const WhatIfCommand = () => {
@@ -105,13 +106,14 @@ export const WhatIfCommand = () => {
               <LineChart data={timelineData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
                 <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
-                <YAxis stroke="hsl(var(--muted-foreground))" label={{ value: 'NY11 Price (¢/lb)', angle: -90, position: 'insideLeft' }} />
+                <YAxis stroke="hsl(var(--muted-foreground))" label={{ value: 'Price ($/MT)', angle: -90, position: 'insideLeft' }} />
                 <Tooltip 
                   contentStyle={{ 
                     backgroundColor: 'hsl(var(--card))', 
                     border: '1px solid hsl(var(--border))',
                     borderRadius: '8px'
                   }}
+                  formatter={(value: number) => `$${value}/MT`}
                 />
                 <Legend />
                 <Line type="monotone" dataKey="baseline" stroke="hsl(var(--muted-foreground))" strokeWidth={2} name="Baseline" />
@@ -263,7 +265,7 @@ export const WhatIfCommand = () => {
                 <div className="rounded-lg border p-4 space-y-2">
                   <p className="text-sm"><strong>Hedge Type:</strong> Forward Contract</p>
                   <p className="text-sm"><strong>Volume:</strong> 50,000 MT</p>
-                  <p className="text-sm"><strong>Price:</strong> NY11 @ 24.50¢/lb</p>
+                  <p className="text-sm"><strong>Price:</strong> NY11 @ $540/MT</p>
                   <p className="text-sm"><strong>Duration:</strong> 6 months</p>
                   <p className="text-sm text-success"><strong>Estimated Risk Reduction:</strong> 45%</p>
                 </div>
