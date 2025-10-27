@@ -189,7 +189,7 @@ export const PredictiveIntelligence = () => {
             <LineChart data={productionForecastData}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
               <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
-              <YAxis stroke="hsl(var(--muted-foreground))" label={{ value: 'Production (Million MT)', angle: -90, position: 'insideLeft' }} />
+              <YAxis stroke="hsl(var(--muted-foreground))" label={{ value: 'Production (Million MT)', angle: -90, position: 'insideLeft' }} domain={[0, 4]} />
               <Tooltip 
                 contentStyle={{ 
                   backgroundColor: 'hsl(var(--card))', 
