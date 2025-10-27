@@ -1,7 +1,7 @@
 import { Sparkles, Calendar, Globe, TrendingUp, Package, FileText, Send, Truck, Target } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, ZAxis } from "recharts";
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 
@@ -23,12 +23,12 @@ const originMixData = [
   { name: "🇮🇳 India", value: 5, color: "#FF9933" },
 ];
 
-// Risk-return matrix data
+// Simplified risk-return comparison data (normalized scores out of 100)
 const riskReturnData = [
-  { country: "🇧🇷 Brazil", cost: 520, reliability: 75, size: 45 },
-  { country: "🇹🇭 Thailand", cost: 540, reliability: 85, size: 30 },
-  { country: "🇦🇺 Australia", cost: 560, reliability: 90, size: 20 },
-  { country: "🇮🇳 India", cost: 500, reliability: 40, size: 5 },
+  { country: "🇧🇷 Brazil", costScore: 85, reliabilityScore: 75, color: "#0052A5" },
+  { country: "🇹🇭 Thailand", costScore: 70, reliabilityScore: 85, color: "#ED1C24" },
+  { country: "🇦🇺 Australia", costScore: 50, reliabilityScore: 90, color: "#FFCD00" },
+  { country: "🇮🇳 India", costScore: 95, reliabilityScore: 40, color: "#FF9933" },
 ];
 
 export const ProcurementCommand = () => {
@@ -167,86 +167,46 @@ export const ProcurementCommand = () => {
         <Card className="p-6">
           <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
             <Target className="h-5 w-5 text-accent" />
-            Origin Risk-Return Matrix
+            Origin Comparison: Cost vs Reliability
           </h3>
+          <p className="mb-4 text-sm text-muted-foreground">Higher scores are better (Cost Score = value for money, Reliability Score = supply stability)</p>
           <div className="mb-4 h-64 rounded-lg bg-muted/30 p-4">
             <ResponsiveContainer width="100%" height="100%">
-              <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+              <BarChart data={riskReturnData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
                 <XAxis 
-                  type="number" 
-                  dataKey="cost" 
-                  name="Cost" 
-                  unit="/MT"
-                  domain={[480, 580]}
+                  dataKey="country" 
                   stroke="hsl(var(--muted-foreground))"
-                  label={{ value: 'Cost ($/MT)', position: 'bottom' }}
                 />
                 <YAxis 
-                  type="number" 
-                  dataKey="reliability" 
-                  name="Reliability" 
-                  unit="%"
-                  domain={[30, 95]}
                   stroke="hsl(var(--muted-foreground))"
-                  label={{ value: 'Supply Reliability', angle: -90, position: 'left' }}
+                  label={{ value: 'Score (out of 100)', angle: -90, position: 'insideLeft' }}
+                  domain={[0, 100]}
                 />
-                <ZAxis type="number" dataKey="size" range={[400, 1000]} />
                 <Tooltip 
-                  cursor={{ strokeDasharray: '3 3' }}
                   contentStyle={{ 
                     backgroundColor: 'hsl(var(--card))', 
                     border: '1px solid hsl(var(--border))',
                     borderRadius: '8px'
                   }}
-                  content={({ payload }) => {
-                    if (payload && payload.length) {
-                      const data = payload[0].payload;
-                      return (
-                        <div className="rounded-lg border bg-card p-2">
-                          <p className="font-semibold">{data.country}</p>
-                          <p className="text-sm">Cost: ${data.cost}/MT</p>
-                          <p className="text-sm">Reliability: {data.reliability}%</p>
-                          <p className="text-sm">Share: {data.size}%</p>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
                 />
-                <Scatter name="Countries" data={riskReturnData} fill="hsl(var(--primary))">
-                  {riskReturnData.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={
-                        entry.country.includes("🇧🇷") ? "#0052A5" :
-                        entry.country.includes("🇹🇭") ? "#ED1C24" :
-                        entry.country.includes("🇦🇺") ? "#FFCD00" :
-                        "#FF9933"
-                      } 
-                    />
-                  ))}
-                </Scatter>
-              </ScatterChart>
+                <Legend />
+                <Bar dataKey="costScore" fill="hsl(var(--primary))" name="Cost Competitiveness" />
+                <Bar dataKey="reliabilityScore" fill="hsl(var(--accent))" name="Supply Reliability" />
+              </BarChart>
             </ResponsiveContainer>
           </div>
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="rounded bg-success/10 p-2 text-center">
-              <p className="font-semibold text-success">Best Value</p>
-              <p className="text-muted-foreground">Low Cost + High Reliability</p>
-            </div>
-            <div className="rounded bg-accent/10 p-2 text-center">
-              <p className="font-semibold text-accent">Premium Reliable</p>
-              <p className="text-muted-foreground">High Cost + High Reliability</p>
-            </div>
-            <div className="rounded bg-warning/10 p-2 text-center">
-              <p className="font-semibold text-warning">Risky Cheap</p>
-              <p className="text-muted-foreground">Low Cost + Low Reliability</p>
-            </div>
-            <div className="rounded bg-destructive/10 p-2 text-center">
-              <p className="font-semibold text-destructive">Avoid</p>
-              <p className="text-muted-foreground">High Cost + Low Reliability</p>
-            </div>
+          <div className="space-y-2">
+            {riskReturnData.map((country) => (
+              <div key={country.country} className="flex items-center gap-3 rounded-lg border p-2">
+                <div className="h-3 w-3 rounded-full" style={{ backgroundColor: country.color }} />
+                <span className="text-sm font-medium">{country.country}</span>
+                <div className="ml-auto flex gap-4 text-xs text-muted-foreground">
+                  <span>Cost: {country.costScore}/100</span>
+                  <span>Reliability: {country.reliabilityScore}/100</span>
+                </div>
+              </div>
+            ))}
           </div>
         </Card>
       </div>
