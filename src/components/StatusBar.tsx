@@ -8,14 +8,16 @@ export const StatusBar = () => {
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium text-muted-foreground">NY11</span>
-              <span className="text-xl font-bold text-foreground">142.50</span>
+              <span className="text-xl font-bold text-foreground">$533</span>
+              <span className="text-xs text-muted-foreground">/MT</span>
               <TrendingUp className="h-4 w-4 text-success" />
               <span className="text-sm font-medium text-success">+2.3%</span>
             </div>
             <div className="h-6 w-px bg-border" />
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium text-muted-foreground">London No.5</span>
-              <span className="text-xl font-bold text-foreground">2,450</span>
+              <span className="text-xl font-bold text-foreground">$640</span>
+              <span className="text-xs text-muted-foreground">/MT</span>
               <TrendingDown className="h-4 w-4 text-destructive" />
               <span className="text-sm font-medium text-destructive">-1.2%</span>
             </div>
