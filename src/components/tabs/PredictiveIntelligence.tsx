@@ -51,12 +51,12 @@ const countryForecast = [
 
 // Production forecast data by country (in Million MT)
 const productionForecastData = [
-  { month: "Nov '24", brazil: 29.4, thailand: 11.5, india: 6.1, australia: 3.2 },
-  { month: "Dec '24", brazil: 29.6, thailand: 11.6, india: 6.0, australia: 3.1 },
-  { month: "Jan '25", brazil: 29.8, thailand: 11.7, india: 5.9, australia: 3.1 },
-  { month: "Feb '25", brazil: 30.0, thailand: 11.75, india: 5.85, australia: 3.05 },
-  { month: "Mar '25", brazil: 30.1, thailand: 11.78, india: 5.82, australia: 3.02 },
-  { month: "Apr '25", brazil: 30.2, thailand: 11.8, india: 5.8, australia: 3.0 },
+  { month: "Nov '24", brazil: 3.0, thailand: 2.0, india: 1.5, australia: 0.8 },
+  { month: "Dec '24", brazil: 3.1, thailand: 2.1, india: 1.4, australia: 0.8 },
+  { month: "Jan '25", brazil: 3.2, thailand: 2.2, india: 1.3, australia: 0.7 },
+  { month: "Feb '25", brazil: 3.3, thailand: 2.3, india: 1.2, australia: 0.7 },
+  { month: "Mar '25", brazil: 3.4, thailand: 2.4, india: 1.1, australia: 0.6 },
+  { month: "Apr '25", brazil: 3.5, thailand: 2.5, india: 1.0, australia: 0.5 },
 ];
 
 export const PredictiveIntelligence = () => {
@@ -209,23 +209,23 @@ export const PredictiveIntelligence = () => {
         <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-4">
           <div className="rounded-lg border bg-card p-4">
             <p className="text-sm text-muted-foreground">🇧🇷 Brazil</p>
-            <p className="text-2xl font-bold text-foreground">30.2M MT</p>
-            <p className="text-xs text-success">+2.7% vs current</p>
+            <p className="text-2xl font-bold text-foreground">3.5M MT</p>
+            <p className="text-xs text-success">+16.7% vs current</p>
           </div>
           <div className="rounded-lg border bg-card p-4">
             <p className="text-sm text-muted-foreground">🇹🇭 Thailand</p>
-            <p className="text-2xl font-bold text-foreground">11.8M MT</p>
-            <p className="text-xs text-success">+2.6% vs current</p>
+            <p className="text-2xl font-bold text-foreground">2.5M MT</p>
+            <p className="text-xs text-success">+25% vs current</p>
           </div>
           <div className="rounded-lg border bg-card p-4">
             <p className="text-sm text-muted-foreground">🇮🇳 India</p>
-            <p className="text-2xl font-bold text-foreground">5.8M MT</p>
-            <p className="text-xs text-destructive">-4.9% vs current</p>
+            <p className="text-2xl font-bold text-foreground">1.0M MT</p>
+            <p className="text-xs text-destructive">-33.3% vs current</p>
           </div>
           <div className="rounded-lg border bg-card p-4">
             <p className="text-sm text-muted-foreground">🇦🇺 Australia</p>
-            <p className="text-2xl font-bold text-foreground">3.0M MT</p>
-            <p className="text-xs text-destructive">-6.3% vs current</p>
+            <p className="text-2xl font-bold text-foreground">0.5M MT</p>
+            <p className="text-xs text-destructive">-37.5% vs current</p>
           </div>
         </div>
       </Card>
