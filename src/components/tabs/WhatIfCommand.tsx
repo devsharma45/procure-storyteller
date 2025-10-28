@@ -93,6 +93,36 @@ export const WhatIfCommand = () => {
               Run Scenario
             </Button>
           </div>
+          <div className="rounded-lg border-l-4 border-[#DA251D] bg-card p-4">
+            <p className="mb-1 flex items-center gap-2 font-semibold text-foreground">
+              🇻🇳 Loss of Vietnam Market
+            </p>
+            <p className="mb-2 text-sm text-muted-foreground">Anti-dumping tariffs</p>
+            <p className="mb-3 text-xs text-muted-foreground">Demand drops 90%<br/>Surplus +45K MT/month</p>
+            <Button size="sm" variant="outline" onClick={() => handleRunScenario("Loss of Vietnam Market")}>
+              Run Scenario
+            </Button>
+          </div>
+          <div className="rounded-lg border-l-4 border-[#28A745] bg-card p-4">
+            <p className="mb-1 flex items-center gap-2 font-semibold text-foreground">
+              📈 Food Processing Demand Spike
+            </p>
+            <p className="mb-2 text-sm text-muted-foreground">New beverage plant</p>
+            <p className="mb-3 text-xs text-muted-foreground">Domestic demand +15%<br/>Reduces export surplus</p>
+            <Button size="sm" variant="outline" onClick={() => handleRunScenario("Food Processing Demand Spike")}>
+              Run Scenario
+            </Button>
+          </div>
+          <div className="rounded-lg border-l-4 border-warning bg-card p-4">
+            <p className="mb-1 flex items-center gap-2 font-semibold text-foreground">
+              💰 Crush Margin Collapse
+            </p>
+            <p className="mb-2 text-sm text-muted-foreground">Raw prices rally</p>
+            <p className="mb-3 text-xs text-muted-foreground">Refined prices stagnant<br/>Margin drops below $50/MT</p>
+            <Button size="sm" variant="outline" onClick={() => handleRunScenario("Crush Margin Collapse")}>
+              Run Scenario
+            </Button>
+          </div>
         </div>
       </Card>
 
@@ -210,6 +240,18 @@ export const WhatIfCommand = () => {
             </div>
             <Button size="sm" onClick={() => toast({ title: "Planning Diversification", description: "Analyzing Colombian supplier capacity..." })}>
               Plan
+            </Button>
+          </div>
+          <div className="flex items-start gap-4 rounded-lg border bg-accent/5 p-4">
+            <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-accent" />
+            <div className="flex-1">
+              <p className="font-semibold text-foreground">Secure Forward Sales Contracts</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Lock in refined sugar sales now at current crush margin before raw prices rise
+              </p>
+            </div>
+            <Button size="sm" onClick={() => toast({ title: "Sales Strategy", description: "Preparing forward contracts for refined sugar..." })}>
+              Execute
             </Button>
           </div>
           <div className="flex items-start gap-4 rounded-lg border bg-warning/5 p-4">

@@ -59,6 +59,26 @@ const productionForecastData = [
   { month: "Apr '25", brazil: 3.5, thailand: 2.5, india: 1.0, australia: 0.5 },
 ];
 
+// Refined sugar demand forecast data (in K MT - Kilo Metric Tons)
+const demandForecastData = [
+  { month: "Nov '24", malaysia: 142, vietnam: 45, philippines: 30, singapore: 25, others: 18, capacity: 280 },
+  { month: "Dec '24", malaysia: 145, vietnam: 47, philippines: 32, singapore: 26, others: 19, capacity: 280 },
+  { month: "Jan '25", malaysia: 148, vietnam: 49, philippines: 33, singapore: 27, others: 20, capacity: 280 },
+  { month: "Feb '25", malaysia: 150, vietnam: 51, philippines: 35, singapore: 28, others: 21, capacity: 280 },
+  { month: "Mar '25", malaysia: 153, vietnam: 53, philippines: 36, singapore: 29, others: 22, capacity: 280 },
+  { month: "Apr '25", malaysia: 156, vietnam: 55, philippines: 38, singapore: 30, others: 23, capacity: 280 },
+];
+
+// Crush margin and white premium data ($/MT)
+const crushMarginData = [
+  { month: "Nov '24", ny11: 533, london5: 640, whitePremium: 107 },
+  { month: "Dec '24", ny11: 553, london5: 658, whitePremium: 105 },
+  { month: "Jan '25", ny11: 569, london5: 670, whitePremium: 101 },
+  { month: "Feb '25", ny11: 577, london5: 688, whitePremium: 111 },
+  { month: "Mar '25", ny11: 591, london5: 700, whitePremium: 109 },
+  { month: "Apr '25", ny11: 608, london5: 720, whitePremium: 112 },
+];
+
 export const PredictiveIntelligence = () => {
   const [timeHorizon, setTimeHorizon] = useState("3M");
   const [productionTimeHorizon, setProductionTimeHorizon] = useState("3M");
@@ -357,6 +377,148 @@ export const PredictiveIntelligence = () => {
               ))}
             </tbody>
           </table>
+        </div>
+      </Card>
+
+      {/* Refined Sugar Demand Forecast */}
+      <Card className="p-6">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-foreground">Refined Sugar Demand Forecast by Market</h3>
+            <p className="text-sm text-muted-foreground">Next 6 months projected demand (K MT)</p>
+          </div>
+        </div>
+        <div className="h-96 rounded-lg bg-muted/30 p-4">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={demandForecastData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
+              <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
+              <YAxis stroke="hsl(var(--muted-foreground))" label={{ value: 'Demand (K MT)', angle: -90, position: 'insideLeft' }} />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: 'hsl(var(--card))', 
+                  border: '1px solid hsl(var(--border))',
+                  borderRadius: '8px'
+                }}
+                formatter={(value: number) => [`${value}K MT`, '']}
+              />
+              <Legend />
+              <Area type="monotone" dataKey="malaysia" stackId="1" stroke="#FFD700" fill="#FFD700" name="🇲🇾 Domestic Malaysia" />
+              <Area type="monotone" dataKey="vietnam" stackId="1" stroke="#DA251D" fill="#DA251D" name="🇻🇳 Vietnam" />
+              <Area type="monotone" dataKey="philippines" stackId="1" stroke="#0038A8" fill="#0038A8" name="🇵🇭 Philippines" />
+              <Area type="monotone" dataKey="singapore" stackId="1" stroke="#ED2939" fill="#ED2939" name="🇸🇬 Singapore" />
+              <Area type="monotone" dataKey="others" stackId="1" stroke="hsl(var(--muted-foreground))" fill="hsl(var(--muted-foreground))" name="Indonesia & Others" />
+              <Line type="monotone" dataKey="capacity" stroke="hsl(var(--destructive))" strokeWidth={2} strokeDasharray="5 5" name="Refining Capacity" dot={false} />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+        
+        {/* Demand & Pricing Forecast Table */}
+        <div className="mt-6">
+          <h4 className="mb-3 text-base font-semibold text-foreground">Demand & Pricing Forecast</h4>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="border-b bg-muted/30">
+                <tr>
+                  <th className="p-3 text-left font-semibold">Market</th>
+                  <th className="p-3 text-left font-semibold">Monthly Demand (MT)</th>
+                  <th className="p-3 text-left font-semibold">Demand Trend</th>
+                  <th className="p-3 text-left font-semibold">Avg. Price ($/MT)</th>
+                  <th className="p-3 text-left font-semibold">Price Forecast</th>
+                  <th className="p-3 text-left font-semibold">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b">
+                  <td className="p-3">🇲🇾 Domestic Malaysia</td>
+                  <td className="p-3 font-medium">142,000</td>
+                  <td className="p-3"><span className="text-success">Growing</span></td>
+                  <td className="p-3">$610</td>
+                  <td className="p-3">Stable</td>
+                  <td className="p-3 text-xs text-muted-foreground">Base demand steady</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-3">🇻🇳 Vietnam</td>
+                  <td className="p-3 font-medium">45,000</td>
+                  <td className="p-3"><span className="text-success">Growing</span></td>
+                  <td className="p-3">$620</td>
+                  <td className="p-3">Stable</td>
+                  <td className="p-3 text-xs text-muted-foreground">High competition from Thai refiners</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-3">🇵🇭 Philippines</td>
+                  <td className="p-3 font-medium">30,000</td>
+                  <td className="p-3"><span className="text-warning">Stable</span></td>
+                  <td className="p-3">$615</td>
+                  <td className="p-3">Rising</td>
+                  <td className="p-3 text-xs text-muted-foreground">Price sensitive, monitoring closely</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-3">🇸🇬 Singapore</td>
+                  <td className="p-3 font-medium">25,000</td>
+                  <td className="p-3"><span className="text-success">Stable</span></td>
+                  <td className="p-3">$625</td>
+                  <td className="p-3">Stable</td>
+                  <td className="p-3 text-xs text-muted-foreground">Premium market, reliable</td>
+                </tr>
+                <tr>
+                  <td className="p-3">🇮🇩 Indonesia & Others</td>
+                  <td className="p-3 font-medium">18,000</td>
+                  <td className="p-3"><span className="text-success">Growing</span></td>
+                  <td className="p-3">$605</td>
+                  <td className="p-3">Stable</td>
+                  <td className="p-3 text-xs text-muted-foreground">Emerging market opportunities</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </Card>
+
+      {/* Crush Margin & White Premium Trend */}
+      <Card className="p-6">
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold text-foreground">Crush Margin & White Premium Trend</h3>
+          <p className="text-sm text-muted-foreground">Profitability spread: Refined (London No. 5) vs Raw (NY11)</p>
+        </div>
+        <div className="h-96 rounded-lg bg-muted/30 p-4">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={crushMarginData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
+              <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
+              <YAxis yAxisId="left" stroke="hsl(var(--primary))" label={{ value: 'Price ($/MT)', angle: -90, position: 'insideLeft' }} />
+              <YAxis yAxisId="right" orientation="right" stroke="hsl(var(--success))" label={{ value: 'White Premium ($/MT)', angle: 90, position: 'insideRight' }} />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: 'hsl(var(--card))', 
+                  border: '1px solid hsl(var(--border))',
+                  borderRadius: '8px'
+                }}
+                formatter={(value: number, name: string) => [`$${value}/MT`, name]}
+              />
+              <Legend />
+              <Line yAxisId="left" type="monotone" dataKey="ny11" stroke="hsl(var(--primary))" strokeWidth={2} name="NY11 Raw Sugar" />
+              <Line yAxisId="left" type="monotone" dataKey="london5" stroke="hsl(var(--accent))" strokeWidth={2} name="London No.5 Refined" />
+              <Line yAxisId="right" type="monotone" dataKey="whitePremium" stroke="hsl(var(--success))" strokeWidth={3} name="White Premium (Margin)" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="mt-4 grid grid-cols-3 gap-4">
+          <div className="rounded-lg border bg-card p-4">
+            <p className="text-sm text-muted-foreground">Current Crush Margin</p>
+            <p className="text-2xl font-bold text-success">+$107/MT</p>
+            <p className="text-xs text-success">Above target ($75/MT)</p>
+          </div>
+          <div className="rounded-lg border bg-card p-4">
+            <p className="text-sm text-muted-foreground">6-Month Average</p>
+            <p className="text-2xl font-bold text-foreground">$108/MT</p>
+            <p className="text-xs text-muted-foreground">Stable profitability</p>
+          </div>
+          <div className="rounded-lg border bg-card p-4">
+            <p className="text-sm text-muted-foreground">Margin Status</p>
+            <p className="text-2xl font-bold text-success">Healthy</p>
+            <p className="text-xs text-success">Continue refining operations</p>
+          </div>
         </div>
       </Card>
 

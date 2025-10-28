@@ -33,6 +33,22 @@ export const StatusBar = () => {
             </div>
             <div className="h-6 w-px bg-border" />
             <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Refined Sales Progress</span>
+              <span className="text-sm font-semibold text-foreground">42%</span>
+              <div className="h-2 w-24 overflow-hidden rounded-full bg-muted">
+                <div className="h-full w-[42%] bg-primary transition-all" />
+              </div>
+            </div>
+            <div className="h-6 w-px bg-border" />
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Crush Margin</span>
+              <span className="rounded-md bg-success/10 px-2 py-1 text-sm font-semibold text-success">
+                +$85/MT
+              </span>
+              <TrendingUp className="h-4 w-4 text-success" />
+            </div>
+            <div className="h-6 w-px bg-border" />
+            <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Risk Score</span>
               <span className="rounded-md bg-warning/10 px-2 py-1 text-sm font-semibold text-warning">
                 Medium

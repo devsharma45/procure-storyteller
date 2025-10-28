@@ -114,6 +114,53 @@ export const MarketCommandCenter = () => {
         </div>
       </Card>
 
+      {/* Refined Sugar Demand Snapshot */}
+      <Card className="p-6">
+        <h3 className="mb-4 text-lg font-semibold text-foreground">Refined Sugar Demand Snapshot</h3>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-lg border-l-4 border-success bg-card p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-2xl">🇲🇾</span>
+              <span className="rounded-full bg-success/10 px-2 py-1 text-xs font-semibold text-success">Stable</span>
+            </div>
+            <p className="font-semibold text-foreground">Domestic Demand</p>
+            <p className="text-2xl font-bold text-foreground">1.7M MT</p>
+            <p className="text-sm text-muted-foreground">Per Year</p>
+            <p className="mt-2 text-xs text-success">Forecast: +2.1% next quarter</p>
+          </div>
+          <div className="rounded-lg border-l-4 border-success bg-card p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-2xl">🇻🇳</span>
+              <span className="rounded-full bg-success/10 px-2 py-1 text-xs font-semibold text-success">Strong</span>
+            </div>
+            <p className="font-semibold text-foreground">Vietnam Export</p>
+            <p className="text-2xl font-bold text-foreground">45K MT</p>
+            <p className="text-sm text-muted-foreground">This Month</p>
+            <p className="mt-2 text-xs text-success">Demand: Growing</p>
+          </div>
+          <div className="rounded-lg border-l-4 border-warning bg-card p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-2xl">🇵🇭</span>
+              <span className="rounded-full bg-warning/10 px-2 py-1 text-xs font-semibold text-warning">Watch</span>
+            </div>
+            <p className="font-semibold text-foreground">Philippines Export</p>
+            <p className="text-2xl font-bold text-foreground">30K MT</p>
+            <p className="text-sm text-muted-foreground">This Month</p>
+            <p className="mt-2 text-xs text-warning">Demand: Price Sensitive</p>
+          </div>
+          <div className="rounded-lg border-l-4 border-success bg-card p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-2xl">🇸🇬</span>
+              <span className="rounded-full bg-success/10 px-2 py-1 text-xs font-semibold text-success">Stable</span>
+            </div>
+            <p className="font-semibold text-foreground">Singapore Export</p>
+            <p className="text-2xl font-bold text-foreground">25K MT</p>
+            <p className="text-sm text-muted-foreground">This Month</p>
+            <p className="mt-2 text-xs text-success">Demand: Stable</p>
+          </div>
+        </div>
+      </Card>
+
       {/* Ethanol Parity Alert */}
       <Card className="border-l-4 border-success p-6">
         <div className="flex items-start justify-between">
@@ -280,6 +327,10 @@ export const MarketCommandCenter = () => {
               <div className="rounded-lg border bg-card p-3">
                 <p className="font-medium text-foreground">🇦🇺 Australia Weather</p>
                 <p className="text-warning">Drought watch - monitoring closely</p>
+              </div>
+              <div className="rounded-lg border bg-card p-3">
+                <p className="font-medium text-foreground">💰 Crush Margin Alert</p>
+                <p className="text-success">White premium widened +5%, increasing profitability</p>
               </div>
             </div>
             <div className="mt-4 flex gap-2">
