@@ -626,6 +626,11 @@ export const PredictiveIntelligence = () => {
           </div>
         </div>
       </Card>
+
+      {/* Disclaimer */}
+      <div className="mt-8 text-center text-xs text-muted-foreground">
+        For informational purposes only. All data, forecasts, and dashboard features are subject to change based on data availability, quality, and ongoing development.
+      </div>
     </div>
   );
 };
