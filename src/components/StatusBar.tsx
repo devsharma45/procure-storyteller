@@ -48,19 +48,12 @@ export const StatusBar = () => {
               <TrendingUp className="h-3.5 w-3.5 text-success" />
             </div>
             <div className="hidden sm:block h-6 w-px bg-border" />
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Risk Score</span>
-              <span className="rounded-md bg-warning/10 px-2 py-1 text-sm font-semibold text-warning">
-                Medium
-              </span>
-            </div>
-            <div className="h-6 w-px bg-border" />
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1.5">
                 <span className="text-sm text-muted-foreground">Risk Score</span>
-                <span className="text-sm font-medium text-warning">Medium</span>
+                <span className="rounded-md bg-warning/10 px-2 py-1 text-sm font-semibold text-warning">Medium</span>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1.5">
                 <AlertCircle className="h-3.5 w-3.5 text-destructive" />
                 <span className="text-sm font-medium text-destructive">3 Alerts</span>
               </div>

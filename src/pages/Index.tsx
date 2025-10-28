@@ -25,8 +25,9 @@ const Index = () => {
         {/* Status bar moved below the main heading as requested */}
         <StatusBar />
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="mb-4 grid w-full grid-cols-4 gap-4 bg-transparent p-0">
+        <div className="my-8">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="mb-4 grid w-full grid-cols-4 gap-4 bg-transparent p-0">
             <TabsTrigger
               value="market"
               className="rounded-lg border-2 border-transparent bg-card px-6 py-4 text-base font-semibold transition-all data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg"
@@ -53,25 +54,26 @@ const Index = () => {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="market" className="mt-0">
+          <TabsContent value="market" className="mt-6">
             <div className="space-y-6">
               <TopPriorityActions />
               <MarketCommandCenter />
             </div>
           </TabsContent>
 
-          <TabsContent value="predictive" className="mt-0">
+          <TabsContent value="predictive" className="mt-6">
             <PredictiveIntelligence />
           </TabsContent>
 
-          <TabsContent value="whatif" className="mt-0">
+          <TabsContent value="whatif" className="mt-6">
             <WhatIfCommand />
           </TabsContent>
 
-          <TabsContent value="procurement" className="mt-0">
+          <TabsContent value="procurement" className="mt-6">
             <ProcurementCommand />
           </TabsContent>
         </Tabs>
+        </div>
       </main>
     </div>
   );
