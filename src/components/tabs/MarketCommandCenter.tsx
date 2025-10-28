@@ -57,7 +57,7 @@ export const MarketCommandCenter = () => {
           title="AI Recommendation"
           value="Hold"
           subtitle="Wait for price dip"
-          change="Updated 2h ago"
+          change="Updated 1 day ago"
           changeType="neutral"
           icon={TrendingUp}
         />
