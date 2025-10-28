@@ -1,6 +1,5 @@
 import { TrendingUp, Package, DollarSign, Activity, Download, Bell, FileText } from "lucide-react";
 import { KPICard } from "../KPICard";
-import { AlertCard } from "../AlertCard";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
@@ -344,34 +343,6 @@ export const MarketCommandCenter = () => {
               </Dialog>
             </div>
           </Card>
-        </div>
-      </div>
-
-      {/* Top Alerts */}
-      <div>
-        <h3 className="mb-4 text-lg font-semibold text-foreground">Top Priority Actions</h3>
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <AlertCard
-            type="error"
-            title="Price Spike Alert"
-            description="NY11 up 5.2% in 24h. Consider accelerating purchases."
-            actionLabel="Review Now"
-            onAction={() => toast({ title: "Review Initiated", description: "Opening detailed price analysis..." })}
-          />
-          <AlertCard
-            type="warning"
-            title="Contract Expiry"
-            description="3 supplier contracts expire in 30 days. Renew or renegotiate."
-            actionLabel="Manage"
-            onAction={() => toast({ title: "Contract Manager", description: "Loading contract management panel..." })}
-          />
-          <AlertCard
-            type="info"
-            title="Optimal Buy Window"
-            description="AI suggests purchasing 50,000 MT next week based on forecast."
-            actionLabel="Schedule"
-            onAction={() => toast({ title: "Purchase Scheduled", description: "Added to procurement calendar" })}
-          />
         </div>
       </div>
     </div>
